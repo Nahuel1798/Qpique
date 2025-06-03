@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Fu0lkRYC32k=",
+  "dgSpecHash": "FkGLdwCHtdU=",
   "success": true,
-  "projectFilePath": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\qpique.web\\Qpique.Web.csproj",
+  "projectFilePath": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\Qpique.Web\\Qpique.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Nahuel\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Nahuel\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

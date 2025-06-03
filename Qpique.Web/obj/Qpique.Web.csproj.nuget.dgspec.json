@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\qpique.web\\Qpique.Web.csproj": {}
+    "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\Qpique.Web\\Qpique.Web.csproj": {}
   },
   "projects": {
-    "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\qpique.web\\Qpique.Web.csproj": {
+    "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\Qpique.Web\\Qpique.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\qpique.web\\Qpique.Web.csproj",
+        "projectUniqueName": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\Qpique.Web\\Qpique.Web.csproj",
         "projectName": "Qpique.Web",
-        "projectPath": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\qpique.web\\Qpique.Web.csproj",
+        "projectPath": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\Qpique.Web\\Qpique.Web.csproj",
         "packagesPath": "C:\\Users\\Nahuel\\.nuget\\packages\\",
-        "outputPath": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\qpique.web\\obj\\",
+        "outputPath": "D:\\Programacion\\3.Tercer año\\.Net\\Qpique\\Qpique.Web\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Nahuel\\AppData\\Roaming\\NuGet\\NuGet.Config"
