@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\QpiqueWeb\\QpiqueWeb.csproj": {}
+    "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\QpiqueWeb.csproj": {}
   },
   "projects": {
-    "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\QpiqueWeb\\QpiqueWeb.csproj": {
+    "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\QpiqueWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\QpiqueWeb\\QpiqueWeb.csproj",
+        "projectUniqueName": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\QpiqueWeb.csproj",
         "projectName": "QpiqueWeb",
-        "projectPath": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\QpiqueWeb\\QpiqueWeb.csproj",
+        "projectPath": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\QpiqueWeb.csproj",
         "packagesPath": "C:\\Users\\Nahuel\\.nuget\\packages\\",
-        "outputPath": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\QpiqueWeb\\obj\\",
+        "outputPath": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Nahuel\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -43,6 +43,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.16, )"
@@ -62,6 +66,14 @@
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
               "version": "[8.0.16, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.3, )"
             }
           },
           "imports": [

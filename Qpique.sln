@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QpiqueWeb", "QpiqueWeb\QpiqueWeb.csproj", "{675B3AF3-AEFA-6223-62E5-843D5E35A1AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{675B3AF3-AEFA-6223-62E5-843D5E35A1AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675B3AF3-AEFA-6223-62E5-843D5E35A1AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675B3AF3-AEFA-6223-62E5-843D5E35A1AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675B3AF3-AEFA-6223-62E5-843D5E35A1AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9987C7E9-455B-4FB7-BD0E-301EC416715A}
+	EndGlobalSection
+EndGlobal
