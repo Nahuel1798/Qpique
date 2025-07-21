@@ -28,3 +28,4 @@ namespace QpiqueWeb.Models
         public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
     }
 }
+

@@ -1,0 +1,307 @@
+@{
+    ViewData["Title"] = "Clientes API";
+}
+
+<div id="app" class="container mt-5">
+    <div class="card shadow rounded-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary">📋 Lista de Clientes</h2>
+                <button class="btn btn-success shadow-sm" @@click="abrirCrear">
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo Cliente
+                </button>
+            </div>
+
+            <div class="input-group mb-4">
+                <input type="text" v-model="search" @@input="fetchClientes" class="form-control rounded-start" placeholder="Buscar por nombre o apellido">
+                <span class="input-group-text bg-primary text-white rounded-end">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
+
+            <div v-if="clientes.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Apellido</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th class="text-center" style="width: 140px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="cliente in clientes" :key="cliente.id">
+                                <td>{{ cliente.apellido }}</td>
+                                <td>{{ cliente.nombre }}</td>
+                                <td>{{ cliente.telefono }}</td>
+                                <td>{{ cliente.email }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-warning me-1" @@click="abrirEditar(cliente)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" @@click="abrirConfirmarEliminar(cliente)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <span class="text-muted">Página {{ page }} de {{ totalPages }}</span>
+                    <div>
+                        <button @@click="anterior" :disabled="page === 1" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </button>
+                        <button @@click="siguiente" :disabled="page === totalPages" class="btn btn-outline-secondary">
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="alert alert-warning text-center mt-4">
+                No se encontraron clientes.
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar -->
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Editar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" v-model="clienteSeleccionado.nombre" placeholder="Nombre">
+                        <label>Nombre</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" v-model="clienteSeleccionado.apellido" placeholder="Apellido">
+                        <label>Apellido</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" v-model="clienteSeleccionado.telefono" placeholder="Teléfono">
+                        <label>Teléfono</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="email" class="form-control" v-model="clienteSeleccionado.email" placeholder="Email">
+                        <label>Email</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-primary" @@click="guardarCambios">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear -->
+    <div class="modal fade" id="modalCrear" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content shadow-lg rounded-4">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Nuevo Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" v-model="nuevoCliente.nombre" placeholder="Nombre">
+                        <label>Nombre</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" v-model="nuevoCliente.apellido" placeholder="Apellido">
+                        <label>Apellido</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" v-model="nuevoCliente.telefono" placeholder="Teléfono">
+                        <label>Teléfono</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="email" class="form-control" v-model="nuevoCliente.email" placeholder="Email">
+                        <label>Email</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-success" @@click="crearCliente">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminación -->
+    <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content shadow rounded-4">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Seguro que deseas eliminar al cliente <strong>{{ clienteSeleccionado.nombre }} {{ clienteSeleccionado.apellido }}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-danger" @@click="eliminarCliente">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const { createApp, ref, onMounted, computed } = Vue;
+
+createApp({
+    setup() {
+        const clientes = ref([]);
+        const search = ref('');
+        const page = ref(1);
+        const pageSize = ref(5);
+        const total = ref(0);
+        const clienteSeleccionado = ref({});
+        const nuevoCliente = ref({ nombre: '', apellido: '', telefono: '', email: '' });
+        let modalEditar, modalCrear, modalConfirmarEliminar;
+
+        const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
+
+        const fetchClientes = async () => {
+            const params = new URLSearchParams({
+                page: page.value,
+                pageSize: pageSize.value,
+                search: search.value.trim()
+            });
+
+            const res = await fetch(`/api/ClientesApi/Paginado?${params.toString()}`);
+            const data = await res.json();
+            clientes.value = data.clientes;
+            total.value = data.total;
+        };
+
+        const siguiente = () => {
+            if (page.value < totalPages.value) {
+                page.value++;
+                fetchClientes();
+            }
+        };
+
+        const anterior = () => {
+            if (page.value > 1) {
+                page.value--;
+                fetchClientes();
+            }
+        };
+
+        const abrirEditar = (cliente) => {
+            clienteSeleccionado.value = { ...cliente };
+            modalEditar.show();
+        };
+
+        const guardarCambios = async () => {
+            const nombre = clienteSeleccionado.value.nombre?.trim();
+            const apellido = clienteSeleccionado.value.apellido?.trim();
+
+            if (!nombre || !apellido) {
+                alert("El nombre y el apellido son obligatorios.");
+                return;
+            }
+
+            const res = await fetch(`/api/ClientesApi/${clienteSeleccionado.value.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(clienteSeleccionado.value)
+            });
+
+            if (res.ok) {
+                fetchClientes();
+                modalEditar.hide();
+            } else {
+                const error = await res.text();
+                alert("Error al guardar los cambios: " + error);
+            }
+        };
+
+
+        const abrirCrear = () => {
+            nuevoCliente.value = { nombre: '', apellido: '', telefono: '', email: '' };
+            modalCrear.show();
+        };
+
+        const crearCliente = async () => {
+            const nombre = nuevoCliente.value.nombre?.trim();
+            const apellido = nuevoCliente.value.apellido?.trim();
+
+            if (!nombre || !apellido) {
+                alert("El nombre y el apellido son obligatorios.");
+                return;
+            }
+
+            const res = await fetch('/api/ClientesApi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoCliente.value)
+            });
+
+            if (res.ok) {
+                fetchClientes();
+                modalCrear.hide();
+            } else {
+                const error = await res.text();
+                alert("Error al crear el cliente: " + error);
+            }
+        };
+
+
+        const abrirConfirmarEliminar = (cliente) => {
+            clienteSeleccionado.value = cliente;
+            modalConfirmarEliminar.show();
+        };
+
+        const eliminarCliente = async () => {
+            const res = await fetch(`/api/ClientesApi/${clienteSeleccionado.value.id}`, { method: 'DELETE' });
+            if (res.ok) {
+                fetchClientes();
+                modalConfirmarEliminar.hide();
+            } else {
+                alert("No se pudo eliminar el cliente.");
+            }
+        };
+
+        onMounted(() => {
+            fetchClientes();
+            modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modalCrear = new bootstrap.Modal(document.getElementById('modalCrear'));
+            modalConfirmarEliminar = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
+        });
+
+        return {
+            clientes,
+            search,
+            page,
+            totalPages,
+            siguiente,
+            anterior,
+            fetchClientes,
+            clienteSeleccionado,
+            abrirEditar,
+            guardarCambios,
+            abrirCrear,
+            nuevoCliente,
+            crearCliente,
+            abrirConfirmarEliminar,
+            eliminarCliente
+        };
+    }
+}).mount('#app');
+</script>
+}

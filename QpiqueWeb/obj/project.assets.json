@@ -7298,11 +7298,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\QpiqueWeb.csproj",
+      "projectUniqueName": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\QpiqueWeb\\QpiqueWeb.csproj",
       "projectName": "QpiqueWeb",
-      "projectPath": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\QpiqueWeb.csproj",
+      "projectPath": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\QpiqueWeb\\QpiqueWeb.csproj",
       "packagesPath": "C:\\Users\\Nahuel\\.nuget\\packages\\",
-      "outputPath": "D:\\Programacion\\3.Tercer año\\.Net\\QpiqueWeb\\Qpique\\qpiqueweb\\obj\\",
+      "outputPath": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\QpiqueWeb\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Nahuel\\AppData\\Roaming\\NuGet\\NuGet.Config"

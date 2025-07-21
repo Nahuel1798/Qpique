@@ -1,0 +1,309 @@
+@{
+    ViewData["Title"] = "Administrar Ventas";
+}
+
+<div id="app" class="container py-4">
+    <h2 class="mb-4">Administrar Ventas</h2>
+
+    <!-- FILTROS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <label for="filtroMes" class="form-label">Mes (YYYY-MM)</label>
+            <input type="month" id="filtroMes" v-model="filtros.mes" @@change="cargarVentas" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="filtroCliente" class="form-label">Cliente</label>
+            <input type="text" id="filtroCliente" v-model="filtros.cliente" @@input="debounceCargar" placeholder="Nombre cliente" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="filtroProducto" class="form-label">Producto</label>
+            <input type="text" id="filtroProducto" v-model="filtros.producto" @@input="debounceCargar" placeholder="Nombre producto" class="form-control" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-secondary w-100" @@click="resetFiltros">Limpiar filtros</button>
+        </div>
+    </div>
+
+    <!-- TABLA VENTAS -->
+    <table class="table table-striped table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="venta in ventas" :key="venta.id">
+                <td>{{ formatFecha(venta.fecha) }}</td>
+                <td>{{ venta.clienteNombre }}</td>
+                <td>${{ venta.total.toFixed(2) }}</td>
+                <td>
+                    <button class="btn btn-sm btn-info me-2" @@click="abrirModalEditar(venta)">Editar</button>
+                    <button class="btn btn-sm btn-danger" @@click="borrarVenta(venta.id)">Eliminar</button>
+                </td>
+            </tr>
+            <tr v-if="ventas.length === 0">
+                <td colspan="4" class="text-center">No se encontraron ventas.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- PAGINACION -->
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" :class="{ disabled: filtros.page === 1 }">
+                <a class="page-link" href="#" @@click.prevent="cambiarPagina(filtros.page - 1)">Anterior</a>
+            </li>
+            <li class="page-item" v-for="p in totalPaginas" :key="p" :class="{ active: p === filtros.page }">
+                <a class="page-link" href="#" @@click.prevent="cambiarPagina(p)">{{ p }}</a>
+            </li>
+            <li class="page-item" :class="{ disabled: filtros.page === totalPaginas }">
+                <a class="page-link" href="#" @@click.prevent="cambiarPagina(filtros.page + 1)">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- MODAL EDITAR VENTA -->
+    <div class="modal fade" id="modalEditarVenta" tabindex="-1" aria-labelledby="modalEditarVentaLabel" aria-hidden="true" ref="modalEditarVenta">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarVentaLabel">Editar Venta #{{ ventaEditando?.id }}</h5>
+                <button type="button" class="btn-close" @@click="cerrarModalEditar" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" v-if="ventaEditando">
+
+                <p><strong>Cliente:</strong> {{ ventaEditando.clienteNombre }}</p>
+                <p><strong>Fecha:</strong> {{ formatFecha(ventaEditando.fecha) }}</p>
+
+                <!-- Agregar producto -->
+                <div class="mb-3">
+                    <label for="selectProducto" class="form-label">Agregar Producto</label>
+                    <select id="selectProducto" v-model="productoSeleccionadoId" class="form-select">
+                        <option value="">-- Seleccione un producto --</option>
+                        <option v-for="prod in productosDisponibles" :key="prod.id" :value="prod.id">
+                            {{ prod.nombre }} (Stock: {{ prod.stock }}, Precio: ${{ prod.precio.toFixed(2) }})
+                        </option>
+                    </select>
+                    <button class="btn btn-sm btn-success mt-2" @@click="agregarProductoVenta" :disabled="!productoSeleccionadoId">
+                        Agregar al detalle
+                    </button>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th style="width:120px;">Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(detalle, idx) in ventaEditando.detalles" :key="idx">
+                            <td>{{ detalle.productoNombre }}</td>
+                            <td>
+                                <input type="number" v-model.number="detalle.cantidad" min="1" class="form-control" />
+                            </td>
+                            <td>${{ detalle.precioUnitario.toFixed(2) }}</td>
+                            <td>${{ (detalle.precioUnitario * detalle.cantidad).toFixed(2) }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Total</th>
+                            <th>${{ totalEditando.toFixed(2) }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @@click="cerrarModalEditar">Cancelar</button>
+                <button class="btn btn-primary" @@click="guardarCambios" :disabled="cargandoGuardar">
+                    {{ cargandoGuardar ? 'Guardando...' : 'Guardar Cambios' }}
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data() {
+        return {
+            ventas: [],
+            totalVentas: 0,
+            filtros: {
+                mes: '',      // formato 'YYYY-MM'
+                cliente: '',
+                producto: '',
+                page: 1,
+                pageSize: 5
+            },
+            productosDisponibles: [],
+            productoSeleccionadoId: null,
+            ventaEditando: null,
+            modalInstance: null,
+            debounceTimer: null,
+            cargandoGuardar: false,
+        };
+    },
+    computed: {
+        totalPaginas() {
+            return Math.ceil(this.totalVentas / this.filtros.pageSize);
+        },
+        totalEditando() {
+            if (!this.ventaEditando) return 0;
+            return this.ventaEditando.detalles.reduce((sum, d) => sum + d.precioUnitario * d.cantidad, 0);
+        }
+    },
+    methods: {
+        cargarVentas() {
+            const params = {
+                fecha: this.filtros.mes ? this.filtros.mes + '-01' : undefined,
+                cliente: this.filtros.cliente || undefined,
+                producto: this.filtros.producto || undefined,
+                page: this.filtros.page,
+                pageSize: this.filtros.pageSize
+            };
+            axios.get('/api/VentasApi/Filtradas', { params })
+                .then(res => {
+                    this.ventas = res.data.ventas;
+                    this.totalVentas = res.data.total;
+                })
+                .catch(() => {
+                    this.ventas = [];
+                    this.totalVentas = 0;
+                });
+        },
+        cambiarPagina(p) {
+            if (p < 1 || p > this.totalPaginas) return;
+            this.filtros.page = p;
+            this.cargarVentas();
+        },
+        debounceCargar() {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                this.filtros.page = 1;
+                this.cargarVentas();
+            }, 400);
+        },
+        resetFiltros() {
+            this.filtros = { mes: '', cliente: '', producto: '', page: 1, pageSize: 5 };
+            this.cargarVentas();
+        },
+        abrirModalEditar(venta) {
+            // Hacer copia profunda para editar sin alterar la lista original
+            this.ventaEditando = JSON.parse(JSON.stringify(venta));
+            if (!this.modalInstance) {
+                this.modalInstance = new bootstrap.Modal(this.$refs.modalEditarVenta);
+            }
+            this.modalInstance.show();
+        },
+        cargarProductosDisponibles() {
+            axios.get('/api/ProductosApi/Todos')
+                .then(res => {
+                    this.productosDisponibles = res.data;
+                });
+        },
+
+        agregarProductoVenta() {
+            if (!this.productoSeleccionadoId) return;
+
+            const prod = this.productosDisponibles.find(p => p.id === parseInt(this.productoSeleccionadoId));
+            if (!prod) return;
+
+            // Verificamos si ya está agregado
+            const existe = this.ventaEditando.detalles.find(d => d.productoNombre === prod.nombre);
+            if (existe) {
+                alert('El producto ya está en la lista. Puedes modificar la cantidad.');
+                return;
+            }
+
+            this.ventaEditando.detalles.push({
+                productoNombre: prod.nombre,
+                cantidad: 1,
+                precioUnitario: prod.precio
+            });
+
+            this.productoSeleccionadoId = null;
+        },
+        cerrarModalEditar() {
+            if (this.modalInstance) this.modalInstance.hide();
+            this.ventaEditando = null;
+        },
+        guardarCambios() {
+            if (!this.ventaEditando) return;
+
+            this.cargandoGuardar = true;
+
+            // Validar cantidades >= 1
+            for (const d of this.ventaEditando.detalles) {
+                if (!d.cantidad || d.cantidad < 1) {
+                    alert("La cantidad debe ser al menos 1.");
+                    this.cargandoGuardar = false;
+                    return;
+                }
+            }
+
+            // Preparar DTO para PUT
+            const dto = {
+                id: this.ventaEditando.id,
+                detalles: this.ventaEditando.detalles.map(d => ({
+                    productoNombre: d.productoNombre,
+                    cantidad: d.cantidad,
+                    precioUnitario: d.precioUnitario
+                }))
+            };
+
+            axios.put(`/api/VentasApi/${this.ventaEditando.id}`, dto)
+                .then(res => {
+                    alert("Venta actualizada. Total nuevo: $" + res.data.total.toFixed(2));
+                    this.cargandoGuardar = false;
+                    this.cerrarModalEditar();
+                    this.cargarVentas();
+                })
+                .catch(err => {
+                    alert("Error al actualizar la venta");
+                    console.error(err);
+                    this.cargandoGuardar = false;
+                });
+        },
+        borrarVenta(id) {
+            if (!confirm("¿Seguro que deseas eliminar esta venta?")) return;
+
+            axios.delete(`/api/VentasApi/${id}`)
+                .then(() => {
+                    alert("Venta eliminada.");
+                    this.cargarVentas();
+                })
+                .catch(err => {
+                    alert("Error al eliminar la venta");
+                    console.error(err);
+                });
+        },
+        formatFecha(fechaStr) {
+            const date = new Date(fechaStr);
+            return date.toLocaleDateString();
+        }
+    },
+    mounted() {
+        this.cargarVentas();
+        this.cargarProductosDisponibles();
+    }
+}).mount('#app');
+</script>
+}
