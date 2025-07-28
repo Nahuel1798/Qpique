@@ -27,7 +27,7 @@
                 <div class="bg-light p-3 rounded shadow-sm text-center">
                     <h6 class="text-muted">Ganancia del Día</h6>
                     <h4>${{ gananciasDia.toFixed(2) }}</h4>
-                    <button class="btn btn-sm btn-outline-primary mt-2" @@click="verVentasDia">Ver ventas(todavia no funciona)</button>
+                    <button class="btn btn-sm btn-outline-primary mt-2" @@click="verVentasDia">Ver ventas</button>
                 </div>
             </div>
             <div class="col-md-4">
@@ -70,13 +70,9 @@
                 config.headers.Authorization = `Bearer ${token}`;
             }
             return config;
-        }, error => {
-            return Promise.reject(error);
-        });
+        }, error => Promise.reject(error));
 
-        axios.interceptors.response.use(response => {
-            return response;
-        }, error => {
+        axios.interceptors.response.use(response => response, error => {
             if (error.response && error.response.status === 401) {
                 alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
                 localStorage.removeItem('jwt');
@@ -108,16 +104,26 @@
                     return arr;
                 }
 
+                function formatearFechaArg(fechaStr) {
+                    const fecha = new Date(fechaStr);
+                    return new Intl.DateTimeFormat('es-AR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).format(fecha);
+                }
+
                 async function cargarGanancias() {
                     try {
-                        // Fecha Base
                         const hoy = new Date();
                         const fechaStr = hoy.toISOString().slice(0, 10);
 
-                        // USAR ENDPOINT DE FILTRADO para obtener ventas por día, semana, mes
                         const [diaResp, semanaResp, mesResp] = await Promise.all([
                             axios.get('/api/VentasApi/Filtradas', {
-                                params: { fecha: fechaStr, rango: 'dia', pageSize: 1000 }
+                                params: { dia: fechaStr, pageSize: 1000 }
                             }),
                             axios.get('/api/VentasApi/Filtradas', {
                                 params: { fecha: fechaStr, rango: 'semana', pageSize: 1000 }
@@ -127,12 +133,10 @@
                             })
                         ]);
 
-                        // SUMAR los totales
                         gananciasDia.value = calcularTotal(diaResp.data.ventas);
                         gananciasSemana.value = calcularTotal(semanaResp.data.ventas);
                         gananciasMes.value = calcularTotal(mesResp.data.ventas);
 
-                        // PAra el Grafico
                         let desde = fechaDesde.value;
                         let hasta = fechaHasta.value;
 
@@ -154,13 +158,25 @@
 
                         const agrupado = {};
                         resp.data.ventas.forEach(v => {
-                            const fechaVenta = new Date(v.fecha).toISOString().slice(0, 10);
+                            const fechaVenta = new Intl.DateTimeFormat('es-AR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            }).format(new Date(v.fecha));
                             agrupado[fechaVenta] = (agrupado[fechaVenta] || 0) + v.total;
                         });
 
                         const desdeDate = new Date(fechaDesde.value);
                         const hastaDate = new Date(fechaHasta.value);
-                        const todasFechas = getDatesArray(desdeDate, hastaDate);
+                        const todasFechas = getDatesArray(desdeDate, hastaDate).map(f => {
+                            const fObj = new Date(f);
+                            return new Intl.DateTimeFormat('es-AR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            }).format(fObj);
+                        });
+
                         const dataChart = todasFechas.map(f => agrupado[f] || 0);
 
                         renderChart(todasFechas, dataChart);
@@ -172,11 +188,10 @@
                 }
 
                 function verVentasDia() {
-                    // Abrir historial filtrado por el día actual
                     const fecha = fechaDesde.value || new Date().toISOString().slice(0, 10);
-                    window.location.href = `/Ventas/Index?fecha=${fecha}&rango=dia`;
+                    window.location.href = `/Ventas/Index?dia`;
                 }
-
+                
                 function verVentasSemana() {
                     const fecha = fechaDesde.value || new Date().toISOString().slice(0, 10);
                     window.location.href = `/Ventas/Index?fecha=${fecha}&rango=semana`;
@@ -214,7 +229,7 @@
                                     title: { display: true, text: 'Ganancia ($)' }
                                 },
                                 x: {
-                                    title: { display: true, text: 'Día' },
+                                    title: { display: true, text: 'Fecha' },
                                     ticks: {
                                         autoSkip: false,
                                         maxRotation: 90,
@@ -237,7 +252,8 @@
                     cargarGanancias,
                     verVentasDia,
                     verVentasSemana,
-                    verVentasMes
+                    verVentasMes,
+                    formatearFechaArg
                 };
             }
         }).mount("#app");

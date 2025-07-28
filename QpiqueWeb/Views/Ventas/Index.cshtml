@@ -64,7 +64,7 @@
                 <div class="card shadow-sm card-venta">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>Venta #{{ venta.id }}</strong><br />
+                            <strong>Venta: {{ venta.id }}</strong><br />
                             <small>{{ formatFecha(venta.fecha) }}</small><br />
                             <small>Cliente: {{ venta.clienteNombre }}</small>
                         </div>
@@ -468,6 +468,7 @@
                     const start = (paginaProductos.value - 1) * pageSizeProductos.value;
                     return productosFiltrados.value.slice(start, start + pageSizeProductos.value);
                 });
+                
 
                 function mostrarExito(msg) {
                     exitoMensaje.value = msg;
@@ -668,10 +669,21 @@
                     }
                 }
 
-                function formatFecha(fechaStr) {
-                    const date = new Date(fechaStr);
-                    return date.toLocaleDateString();
+                function formatFecha(fecha) {
+                    const f = new Date(fecha);
+                    const opcionesFecha = {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    };
+                    const opcionesHora = {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    };
+                    return f.toLocaleDateString('es-AR', opcionesFecha) + ' ' + f.toLocaleTimeString('es-AR', opcionesHora);
                 }
+                
 
                 onMounted(() => {
                     cargarProductosDisponibles();

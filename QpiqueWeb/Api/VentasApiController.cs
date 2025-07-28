@@ -118,48 +118,50 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(new { ventas, total });
         }
 
-        // Trae las ganancias por Dia
-        [HttpGet("GananciasPorDia")]
-        public IActionResult GetGananciasPorDia()
-        {
-            var hoy = DateTime.Today;
-            var ganancias = _context.Ventas
-                .Where(v => v.Fecha.Date == hoy)
-                .Sum(v => (decimal?)v.Total) ?? 0;
+        // // Trae las ganancias por Dia
+        // [HttpGet("GananciasPorDia")]
+        // public IActionResult GetGananciasPorDia()
+        // {
+        //     var inicioDia = DateTime.Today;
+        //     var finDia = inicioDia.AddDays(1);
 
-            return Ok(ganancias);
-        }
+        //     var ganancias = _context.Ventas
+        //         .Where(v => v.Fecha >= inicioDia && v.Fecha < finDia)
+        //         .Sum(v => (decimal?)v.Total) ?? 0;
 
-        // Trae las ganancias por Semana
-        [HttpGet("GananciasPorSemana")]
-        public IActionResult GetGananciasPorSemana()
-        {
-            var hoy = DateTime.Today;
-            int diferencia = (int)hoy.DayOfWeek == 0 ? 6 : (int)hoy.DayOfWeek - 1; // lunes = 0
-            var inicioSemana = hoy.AddDays(-diferencia).Date;
-            var finSemana = inicioSemana.AddDays(7);
+        //     return Ok(ganancias);
+        // }
 
-            var ganancias = _context.Ventas
-                .Where(v => v.Fecha >= inicioSemana && v.Fecha < finSemana)
-                .Sum(v => (decimal?)v.Total) ?? 0;
+        // // Trae las ganancias por Semana
+        // [HttpGet("GananciasPorSemana")]
+        // public IActionResult GetGananciasPorSemana()
+        // {
+        //     var hoy = DateTime.Today;
+        //     int diferencia = (int)hoy.DayOfWeek == 0 ? 6 : (int)hoy.DayOfWeek - 1; // lunes = 0
+        //     var inicioSemana = hoy.AddDays(-diferencia).Date;
+        //     var finSemana = inicioSemana.AddDays(7);
 
-            return Ok(ganancias);
-        }
+        //     var ganancias = _context.Ventas
+        //         .Where(v => v.Fecha >= inicioSemana && v.Fecha < finSemana)
+        //         .Sum(v => (decimal?)v.Total) ?? 0;
 
-        // Trae las ganancias por Mes
-        [HttpGet("GananciasPorMes")]
-        public IActionResult GetGananciasPorMes()
-        {
-            var hoy = DateTime.Today;
-            var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
-            var finMes = inicioMes.AddMonths(1);
+        //     return Ok(ganancias);
+        // }
 
-            var ganancias = _context.Ventas
-                .Where(v => v.Fecha >= inicioMes && v.Fecha < finMes)
-                .Sum(v => (decimal?)v.Total) ?? 0;
+        // // Trae las ganancias por Mes
+        // [HttpGet("GananciasPorMes")]
+        // public IActionResult GetGananciasPorMes()
+        // {
+        //     var hoy = DateTime.Today;
+        //     var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
+        //     var finMes = inicioMes.AddMonths(1);
 
-            return Ok(ganancias);
-        }
+        //     var ganancias = _context.Ventas
+        //         .Where(v => v.Fecha >= inicioMes && v.Fecha < finMes)
+        //         .Sum(v => (decimal?)v.Total) ?? 0;
+
+        //     return Ok(ganancias);
+        // }
 
         // Trae las ganancias
         [HttpGet("Resumen")]
