@@ -14,8 +14,8 @@ namespace QpiqueWeb.Controllers.Api
     [Authorize(Roles = "Administrador")]
     public class CategoriasApiController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _env;
+        private readonly ApplicationDbContext _context; // Usa Entity para conectarse a la base de datos
+        private readonly IWebHostEnvironment _env; // Manejo de imagenes
 
         public CategoriasApiController(ApplicationDbContext context, IWebHostEnvironment env)
         {
@@ -28,7 +28,7 @@ namespace QpiqueWeb.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
         {
-            return await _context.Categorias.ToListAsync();
+            return await _context.Categorias.ToListAsync(); //Lista todas las categorias
         }
 
         // Trae las Categorias por id
@@ -36,7 +36,7 @@ namespace QpiqueWeb.Controllers.Api
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> GetCategoria(int id)
         {
-            var categoria = await _context.Categorias.FindAsync(id);
+            var categoria = await _context.Categorias.FindAsync(id); //Busca por id
             if (categoria == null)
                 return NotFound();
 
@@ -60,7 +60,7 @@ namespace QpiqueWeb.Controllers.Api
                 categoria.ImagenUrl = await GuardarImagen(imagen);
             }
 
-            _context.Categorias.Add(categoria);
+            _context.Categorias.Add(categoria); //Agrega la Categoria
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetCategoria), new { id = categoria.Id }, categoria);
@@ -76,7 +76,7 @@ namespace QpiqueWeb.Controllers.Api
                 return BadRequest("El ID no coincide");
             }
 
-            var categoria = await _context.Categorias.FindAsync(id);
+            var categoria = await _context.Categorias.FindAsync(id); //Busca por id
             if (categoria == null)
             {
                 return NotFound();
@@ -97,7 +97,7 @@ namespace QpiqueWeb.Controllers.Api
                 categoria.ImagenUrl = "/img/categorias/" + fileName;
             }
 
-            _context.Entry(categoria).State = EntityState.Modified;
+            _context.Entry(categoria).State = EntityState.Modified; //Modifica
             await _context.SaveChangesAsync();
 
             return Ok(categoria);
@@ -136,13 +136,13 @@ namespace QpiqueWeb.Controllers.Api
             }
 
             categoria.Estado = true; // Marcar como eliminada
-            _context.Categorias.Update(categoria);
+            _context.Categorias.Update(categoria); //Borrado logico
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // CategoriaDto
+        // CategoriaDto(Evita exponer mas campos del modelo real)
         public class CategoriaDto
         {
             public int Id { get; set; }

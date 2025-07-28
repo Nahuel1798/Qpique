@@ -14,34 +14,34 @@ namespace QpiqueWeb.Controllers.Api
     [ApiController]
     public class VentasApiController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; //Usa Entity para conectarse a la base de datos
 
         public VentasApiController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // DTO para creación de venta
+        // DTO para creación de venta(Evita exponer mas campos del modelo real)
         public class VentaCrearDTO
         {
             public int ClienteId { get; set; }
             public List<DetalleCrearDTO> Detalles { get; set; }
         }
 
-        // DTO para detalles de venta
+        // DTO para detalles de venta(Evita exponer mas campos del modelo real)
         public class DetalleCrearDTO
         {
             public int ProductoId { get; set; }
             public int Cantidad { get; set; }
         }
 
-        // DTOs para actualización PUT
+        // DTOs para actualización PUT(Evita exponer mas campos del modelo real)
         public class VentaActualizarDTO
         {
             public List<DetalleActualizarDTO> Detalles { get; set; }
         }
 
-        // DTO para actualizar detalles de venta
+        // DTO para actualizar detalles de venta(Evita exponer mas campos del modelo real)
         public class DetalleActualizarDTO
         {
             public int ProductoId { get; set; }

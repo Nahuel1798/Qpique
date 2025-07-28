@@ -13,7 +13,7 @@ namespace QpiqueWeb.Controllers.Api
     [ApiController]
     public class ProductosApiController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; // Usa Entity para conectarse a la base de datos
 
         public ProductosApiController(ApplicationDbContext context)
         {
@@ -187,7 +187,7 @@ namespace QpiqueWeb.Controllers.Api
         }
 
 
-        // DTO para Producto
+        // DTO para Producto(Evita exponer mas campos del modelo real)
         public class ProductoDto
         {
             public int Id { get; set; }

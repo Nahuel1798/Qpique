@@ -13,7 +13,7 @@ namespace QpiqueWeb.Controllers.Api
     [ApiController]
     public class ClientesApiController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; //Usa Entity para conectarse a la base de datos
 
         public ClientesApiController(ApplicationDbContext context)
         {
@@ -26,9 +26,10 @@ namespace QpiqueWeb.Controllers.Api
         public async Task<IActionResult> GetClientes()
         {
             var clientes = await _context.Clientes
+                //Ordenar los datos
                 .OrderBy(c => c.Apellido)
                 .ThenBy(c => c.Nombre)
-                .Select(c => new ClienteDto
+                .Select(c => new ClienteDto 
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,
@@ -207,7 +208,7 @@ namespace QpiqueWeb.Controllers.Api
             }
         }
 
-        // DTO para Cliente
+        // DTO para Cliente(Evita exponer mas campos del modelo real)
         public class ClienteDto
         {
             public int Id { get; set; }

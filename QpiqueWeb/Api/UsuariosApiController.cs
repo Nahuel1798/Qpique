@@ -15,12 +15,10 @@ namespace QpiqueWeb.Controllers.Api
     public class RolesApiController : ControllerBase
     {
         private readonly UserManager<Usuario> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-
-        public RolesApiController(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager)
+       
+        public RolesApiController(UserManager<Usuario> userManager)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         // Trae los Usuarios
@@ -232,6 +230,7 @@ namespace QpiqueWeb.Controllers.Api
         }
     }
 
+    // UsuarioDto(Evita exponer mas campos del modelo real)
     public class UsuarioDto
     {
         public string Id { get; set; } = null!;
