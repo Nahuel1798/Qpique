@@ -88,7 +88,7 @@
 
                             <thead class="table-light">
                                 <tr>
-                                    <th>Imagen</th> 
+                                    <th>Imagen</th>
                                     <th>Producto</th>
                                     <th class="text-center" style="width: 70px;">Cantidad</th>
                                     <th class="text-end" style="width: 100px;">Precio Unit.</th>
@@ -367,14 +367,6 @@
     .card-venta .card-body {
         flex-grow: 1;
     }
-
-    .tabla-productos img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        border: 1px solid #ccc;
-        border-radius: 0.25rem;
-    }
 </style>
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
@@ -384,7 +376,7 @@
     <script>
         const { createApp, ref, reactive, computed, onMounted } = Vue;
 
-       // Añade los token a las peticiones
+        // Añade los token a las peticiones
         axios.interceptors.request.use(config => {
             const token = sessionStorage.getItem('jwt');
             if (token) {
