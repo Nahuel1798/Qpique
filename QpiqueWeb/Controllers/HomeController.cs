@@ -13,11 +13,13 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    // Vista Nostros
     public IActionResult Nosotros()
     {
         return View();
     }
 
+    // Vista Contacto
     [HttpGet]
     public IActionResult Contacto()
     {
@@ -42,14 +44,8 @@ public class HomeController : Controller
         return RedirectToAction("Contacto");
     }
 
-
-
+    // Vista Index
     public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
     {
         return View();
     }

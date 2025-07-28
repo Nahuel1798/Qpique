@@ -23,13 +23,13 @@ namespace QpiqueWeb.Controllers
             _userManager = userManager;
         }
 
-        // Api: Productos(Index)
+        // Vista Index Producto(Consume la api ProductoApiController)
         public IActionResult Index()
         {
             return View();
         }
 
-        // GET: Productos/Create
+        // Vista Create (No consume la api, es por el controller)(Endpoint)
         public IActionResult Create()
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre");

@@ -3,7 +3,7 @@
 }
 
 <div id="app" class="container-fluid py-4">
-    <!-- TOASTS DE NOTIFICACIONES -->
+    <!-- Notificaciones -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
         <div class="toast align-items-center text-bg-danger border-0 show" role="alert" v-if="errorMensaje">
             <div class="d-flex">
@@ -26,7 +26,7 @@
     </div>
     <div class="contenido-glass">
         <h2 class="mb-4"><i class="bi bi-cart-check me-2"></i> Administrar Ventas</h2>
-        <!-- FILTROS -->
+        <!-- Filtros -->
         <div class="row g-3 mb-4">
             <div class="col-md-3">
                 <label for="filtroFechaDesde" class="form-label">Fecha Desde</label>
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <!-- LISTA VENTAS EN CARDS -->
+        <!-- Lista ventas -->
         <div v-if="ventas.length === 0" class="text-center my-5">
             <p>No se encontraron ventas.</p>
         </div>
@@ -88,7 +88,7 @@
 
                             <thead class="table-light">
                                 <tr>
-                                    <th>Imagen</th> <!-- Nueva columna -->
+                                    <th>Imagen</th> 
                                     <th>Producto</th>
                                     <th class="text-center" style="width: 70px;">Cantidad</th>
                                     <th class="text-end" style="width: 100px;">Precio Unit.</th>
@@ -118,7 +118,7 @@
             </div>
         </div>
 
-        <!-- PAGINACION -->
+        <!-- Paginacion -->
         <nav aria-label="Paginación" class="mt-4">
             <ul class="pagination justify-content-center">
                 <li class="page-item" :class="{ disabled: filtros.page === 1 }">
@@ -134,7 +134,7 @@
         </nav>
     </div>
 
-    <!-- MODAL EDITAR VENTA -->
+    <!-- Modal Editar -->
     <div class="modal fade" id="modalEditarVenta" tabindex="-1" aria-labelledby="modalEditarVentaLabel"
         aria-hidden="true" ref="modalEditarVenta">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -209,7 +209,7 @@
         </div>
     </div>
 
-    <!-- MODAL PRODUCTOS DISPONIBLES -->
+    <!-- Modal Productos -->
     <div class="modal fade" id="modalProductos" tabindex="-1" aria-labelledby="modalProductosLabel" aria-hidden="true"
         ref="modalProductos">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
@@ -276,7 +276,7 @@
         </div>
     </div>
 
-    <!-- MODAL DETALLES DE VENTA -->
+    <!-- Modal de Detalles -->
     <div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true"
         ref="modalDetalles">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -320,7 +320,7 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRMAR ELIMINACIÓN -->
+    <!-- Modal eliminacion -->
     <div class="modal fade" id="modalEliminarVenta" tabindex="-1" aria-labelledby="modalEliminarVentaLabel"
         aria-hidden="true" ref="modalEliminarVenta">
         <div class="modal-dialog">
@@ -384,17 +384,20 @@
     <script>
         const { createApp, ref, reactive, computed, onMounted } = Vue;
 
-        // Interceptores
+       // Añade los token a las peticiones
         axios.interceptors.request.use(config => {
             const token = sessionStorage.getItem('jwt');
-            if (token) config.headers.Authorization = `Bearer ${token}`;
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
             return config;
         }, error => Promise.reject(error));
 
+        // Maneja los errores
         axios.interceptors.response.use(response => response, error => {
-            if (error.response?.status === 401) {
-                alert("Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.");
-                sessionStorage.removeItem('jwt');
+            if (error.response && error.response.status === 401) {
+                alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('jwt');
                 window.location.href = "/Identity/Account/Login";
             }
             return Promise.reject(error);

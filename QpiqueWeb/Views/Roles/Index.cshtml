@@ -5,7 +5,7 @@
 <div id="app" class="container-fluid py-4">
   <div class="contenido-glass">
     <h2 class="mb-4"><i class="bi bi-shield-lock me-2"></i> Administrar Usuarios y Roles</h2>
-
+    
     <!-- Buscador -->
     <div class="mb-3">
       <input v-model="searchString" @@input="resetPageAndFetch" class="form-control"
@@ -38,8 +38,8 @@
       </div>
     </div>
 
-    <!-- PAGINACIÓN -->
-    <nav aria-label="Paginación" class="mt-4">
+    <!-- Paginancion -->
+    <nav aria-label="Paginacion" class="mt-4">
       <ul class="pagination justify-content-center">
         <li class="page-item" :class="{ disabled: page === 1 }">
           <a class="page-link" href="#" @@click.prevent="cambiarPagina(page - 1)">Anterior</a>
@@ -54,7 +54,7 @@
     </nav>
   </div>
 
-  <!-- Modal Editar Usuario -->
+  <!-- Modal Editar -->
   <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEditar }" style="display: block;"
     v-if="showModalEditar">
     <div class="modal-dialog modal-dialog-centered">
@@ -120,7 +120,7 @@
     </div>
   </div>
 
-  <!-- Modal Confirmar Eliminar -->
+  <!-- Modal Eliminar -->
   <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEliminar }" style="display: block;"
     v-if="showModalEliminar">
     <div class="modal-dialog modal-dialog-centered">
@@ -141,6 +141,15 @@
   </div>
 </div>
 
+<style>
+  .modal {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal.show {
+    display: block;
+  }
+</style>
 
 @section Scripts {
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
@@ -167,15 +176,15 @@
         const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
         watch(page, () => {
-          fetchUsuarios();
+          TraerUsuario();
         });
 
         function resetPageAndFetch() {
           page.value = 1;
-          fetchUsuarios();
+          TraerUsuario();
         }
 
-        async function fetchUsuarios() {
+        async function TraerUsuario() {
           try {
             const params = new URLSearchParams();
             if (searchString.value) params.append('searchString', searchString.value);
@@ -229,7 +238,7 @@
             }
 
             cerrarEditar();
-            fetchUsuarios();
+            TraerUsuario();
             alert('Usuario actualizado');
           } catch (error) {
             alert('Error guardando usuario');
@@ -288,7 +297,7 @@
             }
 
             cerrarAvatar();
-            fetchUsuarios();
+            TraerUsuario();
             alert('Avatar actualizado');
           } catch (error) {
             alert('Error subiendo avatar');
@@ -319,7 +328,7 @@
             }
 
             cerrarEliminar();
-            fetchUsuarios();
+            TraerUsuario();
             alert('Usuario eliminado');
           } catch (error) {
             alert('Error eliminando usuario');
@@ -327,8 +336,9 @@
           }
         }
 
+        /////////// Mounted ////////////
         onMounted(() => {
-          fetchUsuarios();
+          TraerUsuario();
         });
 
         return {
@@ -363,14 +373,4 @@
       }
     }).mount('#app');
   </script>
-
-  <style>
-    .modal {
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal.show {
-      display: block;
-    }
-  </style>
 }

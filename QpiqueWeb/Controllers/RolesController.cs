@@ -19,15 +19,11 @@ namespace QpiqueWeb.Controllers
             _roleManager = roleManager;
         }
 
+        // Vista Index Usuarios(Consume la api UsuarioApiController)
         public IActionResult Index()
         {
             return View();
         }
         
-        [AllowAnonymous]
-        public IActionResult LoginJwt()
-        {
-            return View();
-        }
     }
 }

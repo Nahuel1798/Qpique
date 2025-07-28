@@ -19,8 +19,7 @@ namespace QpiqueWeb.Controllers
             _context = context;
         }
 
-        // GET: Clientes
-        // Clientes/Index
+        //Vista Index Clientes(Consume la api ClientesApiController)
         public IActionResult Index()
         {
             return View();

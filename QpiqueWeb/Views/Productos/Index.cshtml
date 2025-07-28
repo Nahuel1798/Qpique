@@ -1,9 +1,9 @@
 @{
-    ViewData["Title"] = "Administrar Productos - Crear Venta";
+    ViewData["Title"] = "Administrar Productos";
 }
 
 <div id="app" class="container-fluid py-4">
-    <!-- TOASTS DE NOTIFICACIONES -->
+    <!-- Notificaciones -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
         <div class="toast align-items-center text-bg-danger border-0 show" role="alert" v-if="errorMensaje">
             <div class="d-flex">
@@ -25,10 +25,11 @@
         </div>
     </div>
     <div class="contenido-glass">
-        <!-- BOTÓN CREAR PRODUCTO -->
+        <!-- Crear Producto -->
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <h2 class="mb-4"><i class="bi bi-box-seam me-2"></i> Administrar Productos</h2>
-            <a href="/Productos/Create" v-if="estaLogueado" class="btn btn-outline-success d-flex align-items-center gap-2">
+            <a href="/Productos/Create" v-if="estaLogueado"
+                class="btn btn-outline-success d-flex align-items-center gap-2">
                 <i class="bi bi-plus-circle"></i> Crear Producto
             </a>
         </div>
@@ -85,13 +86,13 @@
             </div>
         </div>
 
-        <!-- BUSCADOR -->
+        <!-- Buscador -->
         <div class="mb-4">
             <input type="text" v-model="filtros.nombre" @@input="cargarProductosDebounce"
                 placeholder="🔍 Buscar producto..." class="form-control" />
         </div>
 
-        <!-- LISTADO PRODUCTOS -->
+        <!-- Grid de Productos en Cards  -->
         <div class="row">
             <div v-for="producto in productos" :key="producto.id" class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm"
@@ -104,17 +105,18 @@
                         <p class="mb-1"><strong>Precio:</strong> ${{ producto.precio.toFixed(2) }}</p>
                         <p><strong>Stock:</strong> {{ producto.stock }}</p>
                         <div class="mb-3 d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-primary" v-if="estaLogueado" @@click="abrirModalEditar(producto)">
+                            <button class="btn btn-sm btn-outline-primary" v-if="estaLogueado"
+                                @@click="abrirModalEditar(producto)">
                                 <i class="bi bi-pencil"></i> Editar
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" v-if="estaLogueado" @@click="abrirModalEliminar(producto)">
+                            <button class="btn btn-sm btn-outline-danger" v-if="estaLogueado"
+                                @@click="abrirModalEliminar(producto)">
                                 <i class="bi bi-trash"></i> Eliminar
                             </button>
                         </div>
                         <button class="btn mt-auto fw-bold d-block w-100"
                             :class="estaSeleccionado(producto.id) ? 'btn-outline-danger' : 'btn-outline-primary'"
-                            v-if="estaLogueado"
-                            @@click="toggleSeleccion(producto)" :disabled="producto.stock === 0">
+                            v-if="estaLogueado" @@click="toggleSeleccion(producto)" :disabled="producto.stock === 0">
                             <i :class="estaSeleccionado(producto.id) ? 'bi bi-x-circle' : 'bi bi-cart-plus'"></i>
                             {{ estaSeleccionado(producto.id) ? 'Quitar' : 'Agregar' }}
                         </button>
@@ -123,7 +125,7 @@
             </div>
         </div>
 
-        <!-- PAGINACION -->
+        <!-- Paginacion -->
         <nav aria-label="Paginación">
             <ul class="pagination justify-content-center">
                 <li class="page-item" :class="{ disabled: filtros.page === 1 }">
@@ -139,18 +141,18 @@
         </nav>
     </div>
 
-    <!-- BOTÓN FLOTANTE PARA ABRIR CARRITO -->
+    <!-- Boton Flotante Para el Carrito -->
     <button class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center"
         style="bottom: 30px; right: 30px; z-index: 1050; width: 60px; height: 60px; position: fixed; transition: all 0.3s ease;"
-        v-if="estaLogueado"
-        @@click="abrirModalCarrito" :disabled="productosSeleccionados.length === 0" title="Ver carrito">
+        v-if="estaLogueado" @@click="abrirModalCarrito" :disabled="productosSeleccionados.length === 0"
+        title="Ver carrito">
         <i class="bi bi-cart3 fs-4"></i>
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             {{ productosSeleccionados.length }}
         </span>
     </button>
 
-    <!-- MODAL DEL CARRITO -->
+    <!-- Modal Carrito -->
     <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true"
         ref="modalCarrito">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -220,7 +222,7 @@
         </div>
     </div>
 
-    <!-- MODAL ELIMINAR PRODUCTO -->
+    <!-- Modal Eliminar -->
     <div class="modal fade" id="modalEliminarProducto" tabindex="-1" ref="modalEliminar">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -239,7 +241,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PRODUCTO -->
+    <!-- Modal Editar -->
     <div class="modal fade" id="modalEditarProducto" tabindex="-1" ref="modalEditar">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -335,20 +337,20 @@
     <script>
         const { createApp, ref, reactive, computed, onMounted } = Vue;
 
+        // Añade los token a las peticiones
         axios.interceptors.request.use(config => {
             const token = sessionStorage.getItem('jwt');
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
             return config;
-        }, error => {
-            return Promise.reject(error);
-        });
+        }, error => Promise.reject(error));
 
+        // Maneja los errores
         axios.interceptors.response.use(response => response, error => {
-            if (error.response?.status === 401) {
-                mostrarError("Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.");
-                sessionStorage.removeItem('jwt');
+            if (error.response && error.response.status === 401) {
+                alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('jwt');
                 window.location.href = "/Identity/Account/Login";
             }
             return Promise.reject(error);
@@ -364,7 +366,7 @@
                 const totalProductos = ref(0);
                 const productosSeleccionados = ref([]);
                 let debounceTimer = null;
-                
+
 
                 const modalInstance = ref(null);
                 const modalEliminarInstance = ref(null);
@@ -373,7 +375,7 @@
                 const errorMensaje = ref('');
                 const exitoMensaje = ref('');
 
-                // Computeds
+                ////////// Computeds ////////
                 const totalPaginas = computed(() => Math.ceil(totalProductos.value / filtros.pageSize));
                 const totalVenta = computed(() =>
                     productosSeleccionados.value.reduce((acc, item) => acc + item.precio * item.cantidad, 0)
@@ -382,7 +384,9 @@
                     return !!sessionStorage.getItem('jwt');
                 });
 
-                // Métodos
+                ////////// Metodos /////////
+
+                // Mostrar el mensaje por 5s
                 function mostrarError(mensaje) {
                     errorMensaje.value = mensaje;
                     setTimeout(() => errorMensaje.value = '', 5000);
@@ -582,6 +586,7 @@
                     window.location.href = "/Ventas/Crear";
                 }
 
+                /////////// Mounted //////////
                 onMounted(() => {
                     cargarCategorias();
                     cargarSession();

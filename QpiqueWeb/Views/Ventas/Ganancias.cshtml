@@ -6,7 +6,7 @@
     <div class="contenido-glass">
         <h2 class="mb-4"><i class="bi bi-graph-up-arrow me-2"></i> Reporte de Ganancias</h2>
 
-        <!-- FILTROS DE FECHA -->
+        <!-- Filtro Fecha -->
         <div class="row mb-4">
             <div class="col-md-3">
                 <label for="fechaDesde" class="form-label">Fecha Desde:</label>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <!-- GANANCIAS RESUMIDAS -->
+        <!-- Ganancias -->
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="bg-light p-3 rounded shadow-sm text-center">
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <!-- GRÁFICO -->
+        <!-- Grafico -->
         <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="card-title mb-3">Ganancias Diarias del Rango</h5>
@@ -110,7 +110,7 @@
 
                 async function cargarGanancias() {
                     try {
-                        // FECHA BASE
+                        // Fecha Base
                         const hoy = new Date();
                         const fechaStr = hoy.toISOString().slice(0, 10);
 
@@ -132,7 +132,7 @@
                         gananciasSemana.value = calcularTotal(semanaResp.data.ventas);
                         gananciasMes.value = calcularTotal(mesResp.data.ventas);
 
-                        // PARA EL GRÁFICO, USAR FECHA DESDE/HASTA SELECCIONADAS
+                        // PAra el Grafico
                         let desde = fechaDesde.value;
                         let hasta = fechaHasta.value;
 
@@ -174,7 +174,6 @@
                 function verVentasDia() {
                     // Abrir historial filtrado por el día actual
                     const fecha = fechaDesde.value || new Date().toISOString().slice(0, 10);
-                    // Aquí asumo que tienes una vista para historial que acepta ?fecha=yyyy-MM-dd&rango=dia
                     window.location.href = `/Ventas/Index?fecha=${fecha}&rango=dia`;
                 }
 

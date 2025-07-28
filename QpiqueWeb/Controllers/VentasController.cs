@@ -24,16 +24,19 @@ namespace QpiqueWeb.Controllers
             _userManager = userManager;
         }
 
-        // GET: Ventas/Index
+        // Vista Index Ventas(Consume la api VentasApiController)
         public IActionResult Index()
         {
             return View();
         }
-        // GET: Ventas/Crear
+        
+        // Vista Crear Ventas(Consume la api VentasApiController)
         public IActionResult Crear()
         {
             return View();
         }
+
+        // Vista Ganancias Ventas(Consume la api VentasApiController)
         public IActionResult Ganancias()
         {
             return View();

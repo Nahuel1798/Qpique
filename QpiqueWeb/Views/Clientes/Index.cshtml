@@ -3,7 +3,7 @@
 }
 
 <div id="app" class="container-fluid py-4">
-  <!-- TOASTS DE NOTIFICACIONES -->
+  <!-- Notificaciones -->
   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
     <div class="toast align-items-center text-bg-danger border-0 show" role="alert" v-if="errorMensaje">
       <div class="d-flex">
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- PAGINACIÓN -->
+    <!-- Paginacion -->
     <nav aria-label="Paginación" class="mt-4">
       <ul class="pagination justify-content-center">
         <li class="page-item" :class="{ disabled: page === 1 }">
@@ -71,7 +71,7 @@
     </nav>
   </div>
 
-  <!-- Modal Editar Cliente -->
+  <!-- Modal Cliente -->
   <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEditar }" style="display: block;"
     v-if="showModalEditar">
     <div class="modal-dialog modal-dialog-centered">
@@ -108,7 +108,7 @@
     </div>
   </div>
 
-  <!-- Modal Confirmar Eliminar -->
+  <!-- Modal Eliminar -->
   <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEliminar }" style="display: block;"
     v-if="showModalEliminar">
     <div class="modal-dialog modal-sm">
@@ -129,12 +129,22 @@
   </div>
 </div>
 
+<style>
+  .modal {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal.show {
+    display: block;
+  }
+</style>
+
 @section Scripts {
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <script>
-    // Interceptor para agregar el token JWT a todas las peticiones
+    // Añade los token a las peticiones
     axios.interceptors.request.use(config => {
       const token = sessionStorage.getItem('jwt');
       if (token) {
@@ -143,18 +153,15 @@
       return config;
     }, error => Promise.reject(error));
 
-    // Interceptor para manejar errores globales (ej: 401)
-    axios.interceptors.response.use(
-      response => response,
-      error => {
-        if (error.response && error.response.status === 401) {
-          alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
-          localStorage.removeItem('jwt');
-          window.location.href = "/Identity/Account/Login"; // Ajusta si tu ruta de login es otra
-        }
-        return Promise.reject(error);
+    // Maneja los errores
+    axios.interceptors.response.use(response => response, error => {
+      if (error.response && error.response.status === 401) {
+        alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+        localStorage.removeItem('jwt');
+        window.location.href = "/Identity/Account/Login";
       }
-    );
+      return Promise.reject(error);
+    });
 
     const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
 
@@ -175,13 +182,14 @@
 
         const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
-        watch(page, () => fetchClientes());
+        watch(page, () => TraeCliente());
         watch(searchString, () => {
           page.value = 1;
-          fetchClientes();
+          TraeCliente();
         });
 
-        async function fetchClientes() {
+        ///////////// Metodos /////////////
+        async function TraeCliente() {
           try {
             const params = {
               page: page.value,
@@ -227,7 +235,7 @@
           try {
             await axios.put(`/api/ClientesApi/${clienteEdit.id}`, clienteEdit);
             cerrarEditar();
-            fetchClientes();
+            TraeCliente();
             mostrarExito('✅ Cambios guardados correctamente.');
           } catch (err) {
             mostrarError('Error guardando cambios: ' + (err.response?.data || err.message));
@@ -248,20 +256,21 @@
           try {
             await axios.delete(`/api/ClientesApi/${clienteEliminar.value.id}`);
             cerrarEliminar();
-            fetchClientes();
+            TraeCliente();
             mostrarExito('✅ Cliente eliminado correctamente.');
           } catch (err) {
             mostrarError('Error eliminando cliente: ' + (err.response?.data || err.message));
           }
         }
 
+        //////// Mounted //////////
         onMounted(() => {
-          fetchClientes();
+          TraeCliente();
         });
 
         function resetPageAndFetch() {
           page.value = 1;
-          fetchClientes();
+          TraeCliente();
         }
 
         return {
@@ -289,14 +298,4 @@
       }
     }).mount('#app');
   </script>
-
-  <style>
-    .modal {
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal.show {
-      display: block;
-    }
-  </style>
 }

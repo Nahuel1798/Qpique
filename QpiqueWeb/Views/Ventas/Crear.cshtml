@@ -7,7 +7,7 @@
         <h2 class="mb-4">Confirmar Venta</h2>
         <div v-if="productos.length > 0">
 
-            <!-- Selección de cliente arriba -->
+            <!-- Seleccion de cliente arriba -->
             <div class="mb-4 d-flex align-items-center gap-3">
                 <input type="text" readonly class="form-control fw-bold"
                     :value="clienteSeleccionado ? clienteSeleccionado.nombre + ' ' + clienteSeleccionado.apellido : ''"
@@ -69,7 +69,7 @@
                 Total: ${{ totalVenta.toFixed(2) }}
             </div>
 
-            <!-- Confirmar venta con spinner y validación -->
+            <!-- Confirmar venta con spinner y validacion -->
             <div class="text-end">
                 <button class="btn btn-success" :disabled="!clienteSeleccionadoId || !cantidadValida() || cargando"
                     @@click="confirmarVenta">
@@ -84,7 +84,7 @@
     </div>
 
 
-    <!-- MODAL SELECCIÓN CLIENTE -->
+    <!-- Modal Cliente -->
     <div class="modal fade" id="modalSeleccionCliente" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <!-- Paginación -->
+                    <!-- Paginacion -->
                     <nav class="mt-3">
                         <ul class="pagination justify-content-center">
                             <li class="page-item" :class="{disabled: paginaActual === 1}">
@@ -147,7 +147,7 @@
         </div>
     </div>
 
-    <!-- MINI MODAL CREAR CLIENTE -->
+    <!-- Crear Cliente -->
     <div class="modal fade" id="modalNuevoCliente" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content border-success shadow-sm">
@@ -182,7 +182,7 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRMACIÓN DE VENTA -->
+    <!-- Modal Confirmar Venta -->
     <div class="modal fade" id="modalVentaExitosa" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-success shadow">
@@ -225,19 +225,17 @@
     <script>
         const { createApp } = Vue;
 
+        // Añade los token a las peticiones
         axios.interceptors.request.use(config => {
             const token = sessionStorage.getItem('jwt');
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
             return config;
-        }, error => {
-            return Promise.reject(error);
-        });
+        }, error => Promise.reject(error));
 
-        axios.interceptors.response.use(response => {
-            return response;
-        }, error => {
+        // Maneja los errores
+        axios.interceptors.response.use(response => response, error => {
             if (error.response && error.response.status === 401) {
                 alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
                 localStorage.removeItem('jwt');

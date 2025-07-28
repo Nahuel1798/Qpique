@@ -21,8 +21,7 @@ namespace QpiqueWeb.Controllers
             _context = context;
         }
 
-        // GET: Categoria
-
+        // Vista Index Categoria(Consume la Api CategoriaApiController)
         public IActionResult Index()
         {
             return View();
