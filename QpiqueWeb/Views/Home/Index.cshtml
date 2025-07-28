@@ -19,7 +19,7 @@
 </div>
 
 <!-- ✅ Carrousel -->
-<div class="container-fluid mt-5">
+<div class="container-fluid mt-5 py-4">
     <div id="carouselQpique" class="carousel slide shadow rounded" data-bs-ride="carousel">
         <div class="carousel-inner rounded">
             <div class="carousel-item active">
@@ -40,35 +40,5 @@
             <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
             <span class="visually-hidden">Siguiente</span>
         </button>
-    </div>
-</div>
-
-<!-- ✅ Roles asignados -->
-@using QpiqueWeb.Models
-@using Microsoft.AspNetCore.Identity
-@inject UserManager<Usuario> UserManager
-
-@{
-    var user = await UserManager.GetUserAsync(User);
-    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
-}
-
-<div class="container">
-    <div class="roles-box">
-        <h4 class="text-primary mb-3"><i class="bi bi-person-badge-fill me-2"></i> Roles asignados</h4>
-
-        @if (roles.Count > 0)
-        {
-            <ul>
-                @foreach (var rol in roles)
-                {
-                    <li class="mb-1">@rol</li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p class="text-muted fst-italic">No tenés roles asignados.</p>
-        }
     </div>
 </div>

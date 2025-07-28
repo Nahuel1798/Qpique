@@ -2,29 +2,62 @@
     ViewData["Title"] = "Nosotros";
 }
 
-<div class="container-fluid my-4 py-4">
-    <div class="contenido-glass">
-        <div class="row align-items-center">
-            <div class="col-md-6 mb-4 mb-md-0">
-                <img src="~/img/FotoIndex.jpeg" alt="Tienda Qpique" class="img-fluid rounded shadow" />
+<style>
+    .full-height {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .contenido-nosotros {
+        background: rgba(5, 18, 53, 0.699);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 1.5rem;
+        padding: 3rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        color: #fff;
+        min-width: 1000px;
+    }
+
+    .text-primary {
+        color: #00bfff !important; /* azul eléctrico */
+    }
+
+    .img-fluid {
+        border-radius: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .contenido-glass {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+
+<div class="container-fluid full-height px-4">
+    <div class="contenido-nosotros">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6 mb-4 mb-lg-0 text-center">
+                <img src="~/img/FotoIndex.jpeg" alt="Tienda Qpique" class="img-fluid shadow-lg" />
             </div>
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h2 class="fw-bold mb-3 text-primary">Sobre Qpique</h2>
-                <p class="lead text-muted">
+                <p class="lead text-light">
                     En <strong>Qpique</strong> somos apasionados por la pesca deportiva. Desde nuestros inicios,
                     nos dedicamos a brindar los mejores productos, asesoramiento personalizado y un servicio cálido para
                     todos los amantes del río, el mar y la aventura.
                 </p>
-                <p>
+                <p class="text-white-50">
                     Contamos con una amplia variedad de artículos de pesca: cañas, reels, boyas, anzuelos, indumentaria,
                     y mucho más. Trabajamos con marcas reconocidas y productos seleccionados por expertos.
                 </p>
-                <p>
+                <p class="text-white-50">
                     Nos encontramos en constante crecimiento, siempre cerca de nuestros clientes y atentos a sus
                     necesidades. En Qpique, no vendemos solo artículos... ¡vendemos experiencias!
                 </p>
-                <p class="text-muted fst-italic mt-3">Gracias por elegirnos y confiar en nosotros en cada salida de
-                    pesca.</p>
+                <p class="text-info fst-italic mt-3">Gracias por elegirnos y confiar en nosotros en cada salida de pesca.</p>
             </div>
         </div>
     </div>

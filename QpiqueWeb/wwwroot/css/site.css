@@ -34,7 +34,7 @@ body {
 /*---------------------------*/
 .navbar {
     color: #fff;
-    background-color: rgba(18, 32, 70, 0.685) !important;
+    background-color: rgba(5, 18, 53, 0.699) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -69,7 +69,7 @@ body {
 /*---------------------------*/
 #panelControl {
     color: #f5f5f5;
-    background-color: rgba(18, 32, 70, 0.685) !important;
+    background-color: rgba(5, 18, 53, 0.699) !important;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(39, 38, 54, 0.3);
     border-radius: 1rem;
@@ -94,11 +94,46 @@ body {
     text-decoration: none;
 }
 
+/*---------------------------*/
+/* ANIMACIONES DE BOTONES */
+/*---------------------------*/
+/* Estilo base para enlaces con línea animada */
+.navbar-nav .nav-link,
+.sidebar-nav .nav-link,
+.dropdown-item,
+a.hover-line {
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-nav .nav-link::after,
+.sidebar-nav .nav-link::after,
+.dropdown-item::after,
+a.hover-line::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #416eb1;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after,
+.sidebar-nav .nav-link:hover::after,
+.dropdown-item:hover::after,
+a.hover-line:hover::after {
+    width: 80%;
+}
+
+
 /*-----------------------------------*/
 /* FOOTER MODERNO QPIQUE */
 /*-----------------------------------*/
 footer {
-    background-color: rgba(18, 32, 70, 0.85);
+    background-color: rgba(5, 18, 53, 0.699) !important;
     color: #f1f1f1;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -523,13 +558,14 @@ table {
 
 /* Cabecera */
 table thead {
-    background-color: #366696b6;
+    background-color: rgba(5, 18, 53, 0.699) !important;
     text-transform: uppercase;
     font-weight: 600;
     color: #555;
 }
 
 table thead th {
+    color: white;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #dee2e6;
     white-space: nowrap;
@@ -602,4 +638,5 @@ table tfoot td {
         text-transform: uppercase;
     }
 }
+
 

@@ -42,7 +42,7 @@
                     :class="{
                     'border-primary bg-primary text-white': filtros.categoriaId === null,
                     'border-secondary': filtros.categoriaId !== null
-                }" style="cursor: pointer; flex: 1 1 0; min-width: 80px; height: 100px;"
+                }" style="cursor: pointer; flex: 1 1 0; min-width: 80px; height: 100px; "
                     @@click="() => cambiarCategoria(null)" title="Todas las categorías">
                     <i class="bi bi-card-list fs-2 mb-1"></i>
                     <small>Todos</small>
@@ -156,8 +156,8 @@
     <div class="modal fade" id="modalCarrito" tabindex="-1" aria-labelledby="modalCarritoLabel" aria-hidden="true"
         ref="modalCarrito">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-header border-bottom-0 bg-light rounded-top-4">
                     <h5 class="modal-title" id="modalCarritoLabel">Carrito de Productos para Venta</h5>
                     <button type="button" class="btn-close" @@click="cerrarModalCarrito" aria-label="Cerrar"></button>
                 </div>
@@ -243,9 +243,9 @@
 
     <!-- Modal Editar -->
     <div class="modal fade" id="modalEditarProducto" tabindex="-1" ref="modalEditar">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-header border-bottom-0 bg-light rounded-top-4">
                     <h5 class="modal-title">✏️ Editar Producto</h5>
                     <button type="button" class="btn-close" @@click="cerrarModalEditar"></button>
                 </div>
@@ -286,9 +286,9 @@
                             <input ref="inputImagen" type="file" accept="image/*" class="form-control" />
                         </div>
                         <div class="text-end">
-                            <button class="btn btn-secondary me-2" type="button"
+                            <button class="btn btn-secondary" type="button"
                                 @@click="cerrarModalEditar">Cancelar</button>
-                            <button class="btn btn-warning" type="submit">💾 Guardar Cambios</button>
+                            <button class="btn btn-primary" type="submit">💾 Guardar Cambios</button>
                         </div>
                     </form>
                 </div>
