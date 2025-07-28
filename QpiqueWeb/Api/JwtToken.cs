@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using QpiqueWeb.Models;
-using Microsoft.AspNetCore.Identity; // o el namespace donde esté tu clase Usuario
+using Microsoft.AspNetCore.Identity;
 
 public class JwtTokenService
 {
@@ -16,6 +16,7 @@ public class JwtTokenService
         _userManager = userManager;
     }
 
+    //Generar el Token en el Login
     public async Task<string> GenerateTokenAsync(Usuario usuario)
     {
         var claims = new List<Claim>

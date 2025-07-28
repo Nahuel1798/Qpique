@@ -7,6 +7,8 @@ using QpiqueWeb.Models;
 
 namespace QpiqueWeb.Controllers.Api
 {
+    // No usa Token usa Cookies
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Administrador")]
@@ -21,6 +23,7 @@ namespace QpiqueWeb.Controllers.Api
             _roleManager = roleManager;
         }
 
+        // Trae los Usuarios
         // GET: api/RolesApi?searchString=abc
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsers([FromQuery] string? searchString = null)
@@ -58,6 +61,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(resultado);
         }
 
+        // Trae por Id
         // GET: api/RolesApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UsuarioDto>> GetUser(string id)
@@ -85,6 +89,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(dto);
         }
 
+        // Trae Usuarios Con Paginado
         // GET: api/RolesApi?searchString=abc&page=1&pageSize=10
         [HttpGet("Usuarios")]
         public async Task<IActionResult> GetUsers(
@@ -131,6 +136,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(new { total, usuarios = resultado });
         }
 
+        // Modifica Usarios
         // PUT: api/RolesApi/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UsuarioUpdateDto dto)
@@ -171,6 +177,7 @@ namespace QpiqueWeb.Controllers.Api
             return NoContent();
         }
 
+        // Borra Usuarios
         // DELETE: api/RolesApi/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
@@ -196,6 +203,7 @@ namespace QpiqueWeb.Controllers.Api
             return NoContent();
         }
 
+        // Crear Avatar
         // POST: api/RolesApi/5/avatar
         [HttpPost("{id}/avatar")]
         public async Task<IActionResult> ChangeAvatar(string id)

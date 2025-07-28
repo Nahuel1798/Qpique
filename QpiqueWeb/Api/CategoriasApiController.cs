@@ -7,6 +7,7 @@ using QpiqueWeb.Models;
 
 namespace QpiqueWeb.Controllers.Api
 {
+    // Controla que se use JWT en vez de Cookies
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
@@ -22,6 +23,7 @@ namespace QpiqueWeb.Controllers.Api
             _env = env;
         }
 
+        // Trae todas las Categorias
         // GET: api/Categorias
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
@@ -29,6 +31,7 @@ namespace QpiqueWeb.Controllers.Api
             return await _context.Categorias.ToListAsync();
         }
 
+        // Trae las Categorias por id
         // GET: api/Categorias/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> GetCategoria(int id)
@@ -40,6 +43,7 @@ namespace QpiqueWeb.Controllers.Api
             return categoria;
         }
 
+        // Crea la Categoria
         // POST: api/Categorias
         [HttpPost]
         public async Task<ActionResult<Categoria>> PostCategoria([FromForm] Categoria categoria, IFormFile imagen)
@@ -47,6 +51,7 @@ namespace QpiqueWeb.Controllers.Api
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Verifica la imagen
             if (imagen != null && imagen.Length > 0)
             {
                 if (!imagen.ContentType.StartsWith("image/"))
@@ -61,6 +66,7 @@ namespace QpiqueWeb.Controllers.Api
             return CreatedAtAction(nameof(GetCategoria), new { id = categoria.Id }, categoria);
         }
 
+        // Modifica las Categorias
         // PUT: api/Categorias/id
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategoria(int id, [FromForm] CategoriaDto categoriaDto)
@@ -97,6 +103,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(categoria);
         }
 
+        // Metodo para ingresar Imagenes
         private async Task<string> GuardarImagen(IFormFile imagen)
         {
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imagen.FileName)}";
@@ -112,6 +119,7 @@ namespace QpiqueWeb.Controllers.Api
             return $"/img/categorias/{fileName}";
         }
 
+        // Borrar categoria
         // DELETE: api/Categorias/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategoria(int id)
@@ -134,12 +142,7 @@ namespace QpiqueWeb.Controllers.Api
             return NoContent();
         }
 
-        // Verifica si una categoría existe
-        private bool CategoriaExists(int id)
-        {
-            return _context.Categorias.Any(e => e.Id == id);
-        }
-
+        // CategoriaDto
         public class CategoriaDto
         {
             public int Id { get; set; }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace QpiqueWeb.Controllers.Api
 {
+    // Controla que se use JWT en vez de Cookies
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
@@ -19,6 +20,7 @@ namespace QpiqueWeb.Controllers.Api
             _context = context;
         }
 
+        // Trae todos los productos con Paginado
         // GET: api/ProductosApi/Filtrados?categoriaId=1&nombre=producto&page=1&pageSize=6
         [AllowAnonymous]
         [HttpGet("Filtrados")]
@@ -30,7 +32,7 @@ namespace QpiqueWeb.Controllers.Api
         {
             var query = _context.Productos
                 .Include(p => p.Categoria)
-                .Where(p => !p.Estado) // 👈 Filtro borrado lógico
+                .Where(p => !p.Estado) // Filtro borrado lógico
                 .AsQueryable();
 
             if (categoriaId.HasValue)
@@ -61,6 +63,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(new { total, productos });
         }
 
+        // Trae todos los productos por categoria
         // GET: api/ProductosApi/Categorias
         [AllowAnonymous]
         [HttpGet("Categorias")]
@@ -80,17 +83,18 @@ namespace QpiqueWeb.Controllers.Api
             var idList = ids.Split(',').Select(int.Parse).ToList();
 
             var productos = await _context.Productos
-                .Where(p => idList.Contains(p.Id) && !p.Estado) // 👈 Filtro borrado lógico
+                .Where(p => idList.Contains(p.Id) && !p.Estado) // Filtro borrado lógico
                 .ToListAsync();
 
             return Ok(productos);
         }
 
+        // Todos los Productos por id
         // GET: api/ProductosApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProductoPorId(int id)
         {
-            var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id && !p.Estado); // 👈 Filtro lógico
+            var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id && !p.Estado); // Filtro lógico
 
             if (producto == null)
                 return NotFound();
@@ -98,10 +102,11 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(producto);
         }
 
+        // Actualizar Productos
         // PUT: api/ProductosApi/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador, Empleado")]
-        public async Task<IActionResult> EditarProducto(int id, [FromForm] ProductoDto productoDto, IFormFile? nuevaImagen)
+        public async Task<IActionResult> PutProducto(int id, [FromForm] ProductoDto productoDto, IFormFile? nuevaImagen)
         {
             if (id != productoDto.Id)
                 return BadRequest("El ID del producto no coincide con el de la URL.");
@@ -159,17 +164,17 @@ namespace QpiqueWeb.Controllers.Api
             return NoContent();
         }
 
-
+        // Borrar Producto
         // DELETE: api/ProductosApi/5
         [Authorize(Roles = "Administrador")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> BorrarProducto(int id)
         {
             var producto = await _context.Productos.FindAsync(id);
-            if (producto == null || producto.Estado) // 👈 Ya eliminado
+            if (producto == null || producto.Estado) // Ya eliminado
                 return NotFound();
 
-            producto.Estado = true; // 👈 Borrado lógico
+            producto.Estado = true; // Borrado lógico
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -178,7 +183,7 @@ namespace QpiqueWeb.Controllers.Api
         // Verifica si un producto existe
         private bool ProductoExiste(int id)
         {
-            return _context.Productos.Any(e => e.Id == id && !e.Estado); // 👈 Filtro lógico
+            return _context.Productos.Any(e => e.Id == id && !e.Estado); // Filtro lógico
         }
 
 

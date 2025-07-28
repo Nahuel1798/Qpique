@@ -7,6 +7,7 @@ using QpiqueWeb.Models;
 
 namespace QpiqueWeb.Controllers.Api
 {
+    // Controla que se use JWT en vez de Cookies
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
@@ -19,6 +20,7 @@ namespace QpiqueWeb.Controllers.Api
             _context = context;
         }
 
+        // Trae todos los Clientes
         // GET: api/ClientesApi
         [HttpGet]
         public async Task<IActionResult> GetClientes()
@@ -39,6 +41,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(clientes);
         }
 
+        // Trae los Clientes con paginado
         // GET: api/ClientesApi/Paginado?page=1&pageSize=10&search=nombre
         [HttpGet("Paginado")]
         public async Task<IActionResult> GetClientesPaginado(
@@ -76,6 +79,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(new { total, clientes });
         }
 
+        // Busca por Nombre
         // GET: api/ClientesApi/Buscar?nombre
         [HttpGet("Buscar")]
         public async Task<IActionResult> BuscarClientes([FromQuery] string nombre)
@@ -99,6 +103,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(clientes);
         }
 
+        // Busca por Id
         // GET: api/ClientesApi/id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCliente(int id)
@@ -121,6 +126,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(cliente);
         }
 
+        // Crea Cliente
         // POST: api/ClientesApi
         [HttpPost]
         public async Task<IActionResult> PostCliente([FromBody] ClienteDto dto)
@@ -148,6 +154,7 @@ namespace QpiqueWeb.Controllers.Api
             });
         }
 
+        // Modifica Cliente
         // PUT: api/ClientesApi/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCliente(int id, [FromBody] ClienteDto dto)
@@ -178,6 +185,7 @@ namespace QpiqueWeb.Controllers.Api
             }
         }
 
+        //Borra Cliente
         // DELETE: api/ClientesApi/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
