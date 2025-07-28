@@ -23,13 +23,19 @@
     </div>
   </div>
   <div class="contenido-glass">
-    <h2 class="mb-4"><i class="bi bi-people-fill me-2"></i> Administrar Clientes</h2>
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+      <h2 class="mb-4"><i class="bi bi-box-seam me-2"></i> Administrar Clientes</h2>
+      <button class="btn btn-outline-success d-flex align-items-center gap-2" @@click="abrirCrear">
+        <i class="bi bi-plus-circle"></i>Nuevo Cliente
+      </button>
+    </div>
 
     <!-- Buscador -->
     <div class="mb-3">
       <input v-model="searchString" @@input="resetPageAndFetch" class="form-control"
         placeholder="Buscar por nombre o apellido..." />
     </div>
+
 
     <!-- Grid de Clientes en Cards -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -71,13 +77,51 @@
     </nav>
   </div>
 
-  <!-- Modal Cliente -->
+  <!-- Modal Crear -->
+  <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalCrear }" style="display: block;"
+    v-if="showModalCrear">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <form v-on:submit.prevent="crearCliente">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">➕ Nuevo Cliente</h5>
+            <button type="button" class="btn-close" @@click="cerrarCrear"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Nombre</label>
+              <input v-model="clienteNuevo.nombre" class="form-control" placeholder="Nombre..." required />
+            </div>
+            <div class="mb-3">
+              <label>Apellido</label>
+              <input v-model="clienteNuevo.apellido" class="form-control" placeholder="Apellido..." required />
+            </div>
+            <div class="mb-3">
+              <label>Teléfono</label>
+              <input v-model="clienteNuevo.telefono" class="form-control" placeholder="Opcional..." />
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input v-model="clienteNuevo.email" type="email" class="form-control" placeholder="Opcional..." />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @@click="cerrarCrear">Cancelar</button>
+            <button type="submit" class="btn btn-success">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Editar -->
   <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEditar }" style="display: block;"
     v-if="showModalEditar">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 rounded-4 shadow">
         <form v-on:submit.prevent="guardarCambios">
-          <div class="modal-header bg-warning text-white">
+          <div class="modal-header border-bottom-0 bg-light rounded-top-4">
             <h5 class="modal-title">✏️ Editar Cliente</h5>
             <button type="button" class="btn-close" @@click="cerrarEditar"></button>
           </div>
@@ -101,7 +145,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @@click="cerrarEditar">Cancelar</button>
-            <button type="submit" class="btn btn-warning">Guardar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
           </div>
         </form>
       </div>
@@ -177,6 +221,11 @@
         const pageSize = ref(6);
         const total = ref(0);
 
+        const showModalCrear = ref(false);
+        const clienteNuevo = reactive({
+          nombre: '', apellido: '', telefono: '', email: ''
+        });
+
         const errorMensaje = ref('');
         const exitoMensaje = ref('');
 
@@ -218,6 +267,26 @@
         function cambiarPagina(nuevaPagina) {
           if (nuevaPagina >= 1 && nuevaPagina <= totalPages.value) {
             page.value = nuevaPagina;
+          }
+        }
+
+        function abrirCrear() {
+          showModalCrear.value = true;
+          Object.assign(clienteNuevo, { nombre: '', apellido: '', telefono: '', email: '' });
+        }
+
+        function cerrarCrear() {
+          showModalCrear.value = false;
+        }
+
+        async function crearCliente() {
+          try {
+            await axios.post('/api/ClientesApi', clienteNuevo);
+            cerrarCrear();
+            TraeCliente();
+            mostrarExito('✅ Cliente creado exitosamente.');
+          } catch (err) {
+            mostrarError('Error al crear cliente: ' + (err.response?.data || err.message));
           }
         }
 
@@ -294,6 +363,11 @@
           resetPageAndFetch,
           errorMensaje,
           exitoMensaje,
+          showModalCrear,
+          clienteNuevo,
+          abrirCrear,
+          cerrarCrear,
+          crearCliente
         };
       }
     }).mount('#app');
