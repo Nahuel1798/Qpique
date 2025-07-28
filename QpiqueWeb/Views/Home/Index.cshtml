@@ -1,8 +1,74 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
+}
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
+<!-- ✅ Bienvenida -->
+<div class="container-fluid mt-3 py-2">
+    <div class="fondo-index mx-auto">
+        <div class="contenido-index">
+            <h1 class="display-4 fw-bold mb-3">Bienvenido a <span class="text-warning">Qpique</span></h1>
+            <p class="lead fs-4">Hola, <span class="text-info">@User?.Identity?.Name</span> 👋</p>
+            <p class="fs-5">Tu sitio confiable para comprar productos de calidad. ¡Explorá nuestro catálogo y disfrutá de la mejor experiencia!</p>
+            <a href="/Productos" class="btn btn-lg btn-warning mt-4 shadow">
+                Ver Productos <i class="bi bi-cart"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Carrousel -->
+<div class="container-fluid mt-5">
+    <div id="carouselQpique" class="carousel slide shadow rounded" data-bs-ride="carousel">
+        <div class="carousel-inner rounded">
+            <div class="carousel-item active">
+                <img src="/img/foto1.jpeg" class="d-block w-100" alt="Pesca 1">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/foto2.jpeg" class="d-block w-100" alt="Pesca 2">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/foto3.jpeg" class="d-block w-100" alt="Pesca 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselQpique" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselQpique" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</div>
+
+<!-- ✅ Roles asignados -->
+@using QpiqueWeb.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<Usuario> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="roles-box">
+        <h4 class="text-primary mb-3"><i class="bi bi-person-badge-fill me-2"></i> Roles asignados</h4>
+
+        @if (roles.Count > 0)
+        {
+            <ul>
+                @foreach (var rol in roles)
+                {
+                    <li class="mb-1">@rol</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted fst-italic">No tenés roles asignados.</p>
+        }
+    </div>
 </div>

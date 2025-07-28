@@ -1,5 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licenciado a la .NET Foundation bajo uno o más acuerdos.
+// La .NET Foundation le otorga esta licencia bajo la licencia MIT.
 #nullable disable
 
 using System;
@@ -23,65 +23,72 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
         private readonly SignInManager<Usuario> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<Usuario> signInManager, ILogger<LoginModel> logger)
+        private readonly UserManager<Usuario> _userManager;
+        private readonly JwtTokenService _jwtTokenService;
+
+        public LoginModel(SignInManager<Usuario> signInManager, ILogger<LoginModel> logger, UserManager<Usuario> userManager, JwtTokenService jwtTokenService)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
+            _jwtTokenService = jwtTokenService;
         }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
         /// </summary>
         public string ReturnUrl { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
         /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
         /// </summary>
         public class InputModel
         {
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
             /// </summary>
             [Required]
             [EmailAddress]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
             /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "¿Recordarme?")]
             public bool RememberMe { get; set; }
         }
 
@@ -94,7 +101,7 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
+            // Limpiar la cookie externa existente para asegurar un proceso de inicio de sesión limpio
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -102,40 +109,40 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        public string? JwtToken { get; set; } // Token expuesto a la vista
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+
+        if (ModelState.IsValid)
         {
-            returnUrl ??= Url.Content("~/");
-
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            if (ModelState.IsValid)
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+            if (user == null)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+                ModelState.AddModelError(string.Empty, "Cuenta inválida.");
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                // ✅ Generar el token JWT
+                JwtToken = await _jwtTokenService.GenerateTokenAsync(user);
+
+                _logger.LogInformation("Usuario inició sesión.");
+                return Page(); // No redirigimos para poder mostrar el token
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Intento de inicio de sesión inválido.");
+                return Page();
+            }
         }
+
+        // Si llegamos hasta aquí, es que algo falló
+        return Page();
+    }
     }
 }

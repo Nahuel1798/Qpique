@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QpiqueWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+799ffb3ff25884ece1eead5204253d36939df2b2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2535e796b6531b8367b20ae8be0fe4f75d06c1da")]
 [assembly: System.Reflection.AssemblyProductAttribute("QpiqueWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QpiqueWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

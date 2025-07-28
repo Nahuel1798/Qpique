@@ -1,0 +1,246 @@
+@{
+    ViewData["Title"] = "Reporte de Ganancias";
+}
+
+<div class="container-fluid py-4" id="app">
+    <div class="contenido-glass">
+        <h2 class="mb-4"><i class="bi bi-graph-up-arrow me-2"></i> Reporte de Ganancias</h2>
+
+        <!-- FILTROS DE FECHA -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="fechaDesde" class="form-label">Fecha Desde:</label>
+                <input type="date" id="fechaDesde" v-model="fechaDesde" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="fechaHasta" class="form-label">Fecha Hasta:</label>
+                <input type="date" id="fechaHasta" v-model="fechaHasta" class="form-control" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-primary" @@click="cargarGanancias()">Buscar</button>
+            </div>
+        </div>
+
+        <!-- GANANCIAS RESUMIDAS -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="bg-light p-3 rounded shadow-sm text-center">
+                    <h6 class="text-muted">Ganancia del Día</h6>
+                    <h4>${{ gananciasDia.toFixed(2) }}</h4>
+                    <button class="btn btn-sm btn-outline-primary mt-2" @@click="verVentasDia">Ver ventas(todavia no funciona)</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-light p-3 rounded shadow-sm text-center">
+                    <h6 class="text-muted">Ganancia de la Semana</h6>
+                    <h4>${{ gananciasSemana.toFixed(2) }}</h4>
+                    <button class="btn btn-sm btn-outline-primary mt-2" @@click="verVentasSemana">Ver ventas</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-light p-3 rounded shadow-sm text-center">
+                    <h6 class="text-muted">Ganancia del Mes</h6>
+                    <h4>${{ gananciasMes.toFixed(2) }}</h4>
+                    <button class="btn btn-sm btn-outline-primary mt-2" @@click="verVentasMes">Ver ventas</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICO -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Ganancias Diarias del Rango</h5>
+                <canvas id="graficoGanancias" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        axios.interceptors.request.use(config => {
+            const token = sessionStorage.getItem('jwt');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+        }, error => {
+            return Promise.reject(error);
+        });
+
+        axios.interceptors.response.use(response => {
+            return response;
+        }, error => {
+            if (error.response && error.response.status === 401) {
+                alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('jwt');
+                window.location.href = "/Identity/Account/Login";
+            }
+            return Promise.reject(error);
+        });
+
+        createApp({
+            setup() {
+                const gananciasDia = ref(0);
+                const gananciasSemana = ref(0);
+                const gananciasMes = ref(0);
+                const fechaDesde = ref('');
+                const fechaHasta = ref('');
+                let chart = null;
+
+                function formatDate(date) {
+                    return date.toISOString().slice(0, 10);
+                }
+
+                function getDatesArray(start, end) {
+                    const arr = [];
+                    const dt = new Date(start);
+                    while (dt <= end) {
+                        arr.push(formatDate(new Date(dt)));
+                        dt.setDate(dt.getDate() + 1);
+                    }
+                    return arr;
+                }
+
+                async function cargarGanancias() {
+                    try {
+                        // FECHA BASE
+                        const hoy = new Date();
+                        const fechaStr = hoy.toISOString().slice(0, 10);
+
+                        // USAR ENDPOINT DE FILTRADO para obtener ventas por día, semana, mes
+                        const [diaResp, semanaResp, mesResp] = await Promise.all([
+                            axios.get('/api/VentasApi/Filtradas', {
+                                params: { fecha: fechaStr, rango: 'dia', pageSize: 1000 }
+                            }),
+                            axios.get('/api/VentasApi/Filtradas', {
+                                params: { fecha: fechaStr, rango: 'semana', pageSize: 1000 }
+                            }),
+                            axios.get('/api/VentasApi/Filtradas', {
+                                params: { fecha: fechaStr, rango: 'mes', pageSize: 1000 }
+                            })
+                        ]);
+
+                        // SUMAR los totales
+                        gananciasDia.value = calcularTotal(diaResp.data.ventas);
+                        gananciasSemana.value = calcularTotal(semanaResp.data.ventas);
+                        gananciasMes.value = calcularTotal(mesResp.data.ventas);
+
+                        // PARA EL GRÁFICO, USAR FECHA DESDE/HASTA SELECCIONADAS
+                        let desde = fechaDesde.value;
+                        let hasta = fechaHasta.value;
+
+                        if (!desde || !hasta) {
+                            const ahora = new Date();
+                            desde = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+                            hasta = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 0);
+                            fechaDesde.value = formatDate(desde);
+                            fechaHasta.value = formatDate(hasta);
+                        }
+
+                        const resp = await axios.get('/api/VentasApi/Filtradas', {
+                            params: {
+                                fechaDesde: fechaDesde.value,
+                                fechaHasta: fechaHasta.value,
+                                pageSize: 1000
+                            }
+                        });
+
+                        const agrupado = {};
+                        resp.data.ventas.forEach(v => {
+                            const fechaVenta = new Date(v.fecha).toISOString().slice(0, 10);
+                            agrupado[fechaVenta] = (agrupado[fechaVenta] || 0) + v.total;
+                        });
+
+                        const desdeDate = new Date(fechaDesde.value);
+                        const hastaDate = new Date(fechaHasta.value);
+                        const todasFechas = getDatesArray(desdeDate, hastaDate);
+                        const dataChart = todasFechas.map(f => agrupado[f] || 0);
+
+                        renderChart(todasFechas, dataChart);
+
+                    } catch (error) {
+                        console.error("Error al cargar ganancias:", error);
+                        alert("Error al cargar ganancias.");
+                    }
+                }
+
+                function verVentasDia() {
+                    // Abrir historial filtrado por el día actual
+                    const fecha = fechaDesde.value || new Date().toISOString().slice(0, 10);
+                    // Aquí asumo que tienes una vista para historial que acepta ?fecha=yyyy-MM-dd&rango=dia
+                    window.location.href = `/Ventas/Index?fecha=${fecha}&rango=dia`;
+                }
+
+                function verVentasSemana() {
+                    const fecha = fechaDesde.value || new Date().toISOString().slice(0, 10);
+                    window.location.href = `/Ventas/Index?fecha=${fecha}&rango=semana`;
+                }
+
+                function verVentasMes() {
+                    const fecha = fechaDesde.value || new Date().toISOString().slice(0, 10);
+                    window.location.href = `/Ventas/Index?fecha=${fecha}&rango=mes`;
+                }
+
+                function calcularTotal(ventas) {
+                    return ventas.reduce((sum, v) => sum + v.total, 0);
+                }
+
+                function renderChart(labels, data) {
+                    const ctx = document.getElementById('graficoGanancias').getContext('2d');
+                    if (chart) chart.destroy();
+
+                    chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Ganancias por Día',
+                                data: data,
+                                backgroundColor: '#007bff',
+                                borderRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: { display: true, text: 'Ganancia ($)' }
+                                },
+                                x: {
+                                    title: { display: true, text: 'Día' },
+                                    ticks: {
+                                        autoSkip: false,
+                                        maxRotation: 90,
+                                        minRotation: 45
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                onMounted(cargarGanancias);
+
+                return {
+                    gananciasDia,
+                    gananciasSemana,
+                    gananciasMes,
+                    fechaDesde,
+                    fechaHasta,
+                    cargarGanancias,
+                    verVentasDia,
+                    verVentasSemana,
+                    verVentasMes
+                };
+            }
+        }).mount("#app");
+    </script>
+}

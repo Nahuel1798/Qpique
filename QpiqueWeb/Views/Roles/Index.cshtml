@@ -1,0 +1,376 @@
+@{
+  ViewData["Title"] = "Administrar Usuarios y Roles";
+}
+
+<div id="app" class="container-fluid py-4">
+  <div class="contenido-glass">
+    <h2 class="mb-4"><i class="bi bi-shield-lock me-2"></i> Administrar Usuarios y Roles</h2>
+
+    <!-- Buscador -->
+    <div class="mb-3">
+      <input v-model="searchString" @@input="resetPageAndFetch" class="form-control"
+        placeholder="Buscar por nombre o apellido..." />
+    </div>
+
+    <!-- Grid de Usuarios en Cards -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div class="col" v-for="usuario in usuarios" :key="usuario.id">
+        <div class="card h-100 shadow rounded-4 border-0 p-4 bg-light">
+          <div class="card-body d-flex flex-column align-items-center text-center">
+            <img :src="usuario.avatar || '/img/avatars/default.png'" alt="Avatar" class="rounded-circle mb-4 shadow"
+              style="width: 110px; height: 110px; object-fit: cover;" />
+            <h4 class="fw-bold text-primary mb-1">{{ usuario.nombre }} {{ usuario.apellido }}</h4>
+            <p class="text-muted fs-6 mb-2"><i class="bi bi-envelope me-2"></i>{{ usuario.email }}</p>
+            <span class="badge bg-primary fs-6 px-3 py-2">{{ usuario.roles.join(', ') }}</span>
+          </div>
+          <div class="card-footer border-0 bg-transparent d-flex justify-content-around pt-3">
+            <button class="btn btn-outline-primary px-4 py-1" @@click="abrirEditar(usuario)">
+              <i class="bi bi-pencil me-1"></i>Editar
+            </button>
+            <button class="btn btn-outline-warning px-4 py-1" @@click="abrirAvatar(usuario)">
+              <i class="bi bi-image me-1"></i>Avatar
+            </button>
+            <button class="btn btn-outline-danger px-4 py-1" @@click="confirmarEliminar(usuario)">
+              <i class="bi bi-trash me-1"></i>Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGINACIÓN -->
+    <nav aria-label="Paginación" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" :class="{ disabled: page === 1 }">
+          <a class="page-link" href="#" @@click.prevent="cambiarPagina(page - 1)">Anterior</a>
+        </li>
+        <li class="page-item" v-for="n in totalPages" :key="n" :class="{ active: n === page }">
+          <a class="page-link" href="#" @@click.prevent="cambiarPagina(n)">{{ n }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: page === totalPages }">
+          <a class="page-link" href="#" @@click.prevent="cambiarPagina(page + 1)">Siguiente</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Modal Editar Usuario -->
+  <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEditar }" style="display: block;"
+    v-if="showModalEditar">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <form v-on:submit.prevent="guardarCambios">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Usuario</h5>
+            <button type="button" class="btn-close" @@click="cerrarEditar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Nombre</label>
+              <input v-model="usuarioEdit.nombre" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Apellido</label>
+              <input v-model="usuarioEdit.apellido" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input v-model="usuarioEdit.email" type="email" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Rol</label>
+              <select v-model="usuarioEdit.nuevoRol" class="form-select" required>
+                <option v-for="rol in rolesDisponibles" :key="rol" :value="rol">{{ rol }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @@click="cerrarEditar">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cambiar Avatar -->
+  <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalAvatar }" style="display: block;"
+    v-if="showModalAvatar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form v-on:submit.prevent="guardarAvatar" enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title">Cambiar Avatar</h5>
+            <button type="button" class="btn-close" @@click="cerrarAvatar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <input type="file" @@change="onFileChange" accept="image/*" required />
+            </div>
+            <div v-if="avatarPreview" class="mb-3">
+              <img :src="avatarPreview" alt="Preview Avatar" class="img-thumbnail" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @@click="cerrarAvatar">Cancelar</button>
+            <button type="submit" class="btn btn-primary" :disabled="!selectedFile">Subir</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Eliminar -->
+  <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEliminar }" style="display: block;"
+    v-if="showModalEliminar">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" @@click="cerrarEliminar"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Eliminar usuario <strong>{{ usuarioEliminar?.nombre }} {{ usuarioEliminar?.apellido }}</strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @@click="cerrarEliminar">Cancelar</button>
+          <button class="btn btn-danger" @@click="eliminarUsuario">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section Scripts {
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const usuarios = ref([]);
+        const searchString = ref('');
+        const rolesDisponibles = ref(['Administrador', 'Empleado', 'Cliente']);
+        const showModalEditar = ref(false);
+        const showModalAvatar = ref(false);
+        const showModalEliminar = ref(false);
+        const usuarioEdit = reactive({});
+        const usuarioAvatar = ref(null);
+        const usuarioEliminar = ref(null);
+        const selectedFile = ref(null);
+        const avatarPreview = ref(null);
+        const page = ref(1);
+        const pageSize = ref(6);
+        const total = ref(0);
+
+        const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
+
+        watch(page, () => {
+          fetchUsuarios();
+        });
+
+        function resetPageAndFetch() {
+          page.value = 1;
+          fetchUsuarios();
+        }
+
+        async function fetchUsuarios() {
+          try {
+            const params = new URLSearchParams();
+            if (searchString.value) params.append('searchString', searchString.value);
+            params.append('page', page.value);
+            params.append('pageSize', pageSize.value);
+
+            const url = `/api/RolesApi/Usuarios${this.searchString ? `?searchString=${encodeURIComponent(this.searchString)}` : ''}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            total.value = data.total;
+            usuarios.value = data.usuarios.map(u => ({
+              ...u,
+              avatar: u.avatar || null,
+              nuevoRol: u.roles.length > 0 ? u.roles[0] : null
+            }));
+          } catch (error) {
+            alert('Error cargando usuarios');
+            console.error(error);
+          }
+        }
+
+        function cambiarPagina(nuevaPagina) {
+          if (nuevaPagina >= 1 && nuevaPagina <= totalPages.value) {
+            page.value = nuevaPagina;
+          }
+        }
+
+        function abrirEditar(usuario) {
+          Object.assign(usuarioEdit, usuario);
+          showModalEditar.value = true;
+        }
+
+        function cerrarEditar() {
+          showModalEditar.value = false;
+          for (const key in usuarioEdit) delete usuarioEdit[key];
+        }
+
+        async function guardarCambios() {
+          try {
+            const res = await fetch(`/api/RolesApi/${usuarioEdit.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(usuarioEdit)
+            });
+
+            if (!res.ok) {
+              const errorData = await res.json();
+              alert('Error guardando cambios: ' + JSON.stringify(errorData));
+              return;
+            }
+
+            cerrarEditar();
+            fetchUsuarios();
+            alert('Usuario actualizado');
+          } catch (error) {
+            alert('Error guardando usuario');
+            console.error(error);
+          }
+        }
+
+        function abrirAvatar(usuario) {
+          usuarioAvatar.value = usuario;
+          showModalAvatar.value = true;
+          selectedFile.value = null;
+          avatarPreview.value = null;
+        }
+
+        function cerrarAvatar() {
+          showModalAvatar.value = false;
+          usuarioAvatar.value = null;
+          selectedFile.value = null;
+          avatarPreview.value = null;
+        }
+
+        function onFileChange(event) {
+          const file = event.target.files[0];
+          selectedFile.value = file;
+
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+              avatarPreview.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            avatarPreview.value = null;
+          }
+        }
+
+        async function guardarAvatar() {
+          if (!selectedFile.value) {
+            alert('Selecciona un archivo primero');
+            return;
+          }
+
+          try {
+            const formData = new FormData();
+            formData.append('file', selectedFile.value);
+
+            const res = await fetch(`/api/RolesApi/${usuarioAvatar.value.id}/avatar`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!res.ok) {
+              const errorData = await res.json();
+              alert('Error subiendo avatar: ' + JSON.stringify(errorData));
+              return;
+            }
+
+            cerrarAvatar();
+            fetchUsuarios();
+            alert('Avatar actualizado');
+          } catch (error) {
+            alert('Error subiendo avatar');
+            console.error(error);
+          }
+        }
+
+        function confirmarEliminar(usuario) {
+          usuarioEliminar.value = usuario;
+          showModalEliminar.value = true;
+        }
+
+        function cerrarEliminar() {
+          showModalEliminar.value = false;
+          usuarioEliminar.value = null;
+        }
+
+        async function eliminarUsuario() {
+          try {
+            const res = await fetch(`/api/RolesApi/${usuarioEliminar.value.id}`, {
+              method: 'DELETE'
+            });
+
+            if (!res.ok) {
+              const errorData = await res.json();
+              alert('Error eliminando usuario: ' + JSON.stringify(errorData));
+              return;
+            }
+
+            cerrarEliminar();
+            fetchUsuarios();
+            alert('Usuario eliminado');
+          } catch (error) {
+            alert('Error eliminando usuario');
+            console.error(error);
+          }
+        }
+
+        onMounted(() => {
+          fetchUsuarios();
+        });
+
+        return {
+          usuarios,
+          searchString,
+          rolesDisponibles,
+          showModalEditar,
+          showModalAvatar,
+          showModalEliminar,
+          usuarioEdit,
+          usuarioAvatar,
+          usuarioEliminar,
+          selectedFile,
+          avatarPreview,
+          page,
+          pageSize,
+          total,
+          totalPages,
+          resetPageAndFetch,
+          cambiarPagina,
+          abrirEditar,
+          cerrarEditar,
+          guardarCambios,
+          abrirAvatar,
+          cerrarAvatar,
+          onFileChange,
+          guardarAvatar,
+          confirmarEliminar,
+          cerrarEliminar,
+          eliminarUsuario,
+        };
+      }
+    }).mount('#app');
+  </script>
+
+  <style>
+    .modal {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.show {
+      display: block;
+    }
+  </style>
+}

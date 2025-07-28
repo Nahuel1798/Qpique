@@ -1,307 +1,302 @@
 @{
-    ViewData["Title"] = "Clientes API";
+  ViewData["Title"] = "Administrar Clientes";
 }
 
-<div id="app" class="container mt-5">
-    <div class="card shadow rounded-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold text-primary">📋 Lista de Clientes</h2>
-                <button class="btn btn-success shadow-sm" @@click="abrirCrear">
-                    <i class="bi bi-plus-circle me-1"></i> Nuevo Cliente
-                </button>
-            </div>
-
-            <div class="input-group mb-4">
-                <input type="text" v-model="search" @@input="fetchClientes" class="form-control rounded-start" placeholder="Buscar por nombre o apellido">
-                <span class="input-group-text bg-primary text-white rounded-end">
-                    <i class="bi bi-search"></i>
-                </span>
-            </div>
-
-            <div v-if="clientes.length > 0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle text-center">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Apellido</th>
-                                <th>Nombre</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th class="text-center" style="width: 140px;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="cliente in clientes" :key="cliente.id">
-                                <td>{{ cliente.apellido }}</td>
-                                <td>{{ cliente.nombre }}</td>
-                                <td>{{ cliente.telefono }}</td>
-                                <td>{{ cliente.email }}</td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-warning me-1" @@click="abrirEditar(cliente)">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" @@click="abrirConfirmarEliminar(cliente)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <span class="text-muted">Página {{ page }} de {{ totalPages }}</span>
-                    <div>
-                        <button @@click="anterior" :disabled="page === 1" class="btn btn-outline-secondary me-2">
-                            <i class="bi bi-chevron-left"></i> Anterior
-                        </button>
-                        <button @@click="siguiente" :disabled="page === totalPages" class="btn btn-outline-secondary">
-                            Siguiente <i class="bi bi-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div v-else class="alert alert-warning text-center mt-4">
-                No se encontraron clientes.
-            </div>
+<div id="app" class="container-fluid py-4">
+  <!-- TOASTS DE NOTIFICACIONES -->
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    <div class="toast align-items-center text-bg-danger border-0 show" role="alert" v-if="errorMensaje">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ errorMensaje }}
         </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" @@click="errorMensaje = ''"></button>
+      </div>
+    </div>
+    <div class="toast align-items-center text-bg-success border-0 show" role="alert" v-if="exitoMensaje">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ exitoMensaje }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" @@click="exitoMensaje = ''"></button>
+      </div>
+    </div>
+  </div>
+  <div class="contenido-glass">
+    <h2 class="mb-4"><i class="bi bi-people-fill me-2"></i> Administrar Clientes</h2>
+
+    <!-- Buscador -->
+    <div class="mb-3">
+      <input v-model="searchString" @@input="resetPageAndFetch" class="form-control"
+        placeholder="Buscar por nombre o apellido..." />
     </div>
 
-    <!-- Modal Editar -->
-    <div class="modal fade" id="modalEditar" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content shadow-lg rounded-4">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Editar Cliente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-floating mb-2">
-                        <input type="text" class="form-control" v-model="clienteSeleccionado.nombre" placeholder="Nombre">
-                        <label>Nombre</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="text" class="form-control" v-model="clienteSeleccionado.apellido" placeholder="Apellido">
-                        <label>Apellido</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="text" class="form-control" v-model="clienteSeleccionado.telefono" placeholder="Teléfono">
-                        <label>Teléfono</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="email" class="form-control" v-model="clienteSeleccionado.email" placeholder="Email">
-                        <label>Email</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary" @@click="guardarCambios">Guardar</button>
-                </div>
-            </div>
+    <!-- Grid de Clientes en Cards -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div class="col" v-for="cliente in clientes" :key="cliente.id">
+        <div class="card h-100 shadow rounded-4 border-0 p-3 bg-light">
+          <div class="card-body d-flex flex-column align-items-center text-center">
+            <img :src="'/img/avatar.png'" alt="Avatar" class="rounded-circle mb-4 shadow"
+              style="width: 110px; height: 110px; object-fit: cover;" />
+            <h4 class="fw-bold text-primary mb-2">{{ cliente.nombre }} {{ cliente.apellido }}</h4>
+            <p class="text-muted mb-1 fs-6"><i class="bi bi-telephone me-2"></i>{{ cliente.telefono || 'Sin teléfono' }}
+            </p>
+            <p class="text-muted mb-3 fs-6"><i class="bi bi-envelope me-2"></i>{{ cliente.email || 'Sin email' }}</p>
+          </div>
+          <div class="card-footer border-0 bg-transparent d-flex justify-content-around pt-0">
+            <button class="btn btn-outline-primary px-4 py-1" @@click="abrirEditar(cliente)">
+              <i class="bi bi-pencil me-1"></i>Editar
+            </button>
+            <button class="btn btn-outline-danger px-4 py-1" @@click="confirmarEliminar(cliente)">
+              <i class="bi bi-trash me-1"></i>Eliminar
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
-    <!-- Modal Crear -->
-    <div class="modal fade" id="modalCrear" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content shadow-lg rounded-4">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Nuevo Cliente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-floating mb-2">
-                        <input type="text" class="form-control" v-model="nuevoCliente.nombre" placeholder="Nombre">
-                        <label>Nombre</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="text" class="form-control" v-model="nuevoCliente.apellido" placeholder="Apellido">
-                        <label>Apellido</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="text" class="form-control" v-model="nuevoCliente.telefono" placeholder="Teléfono">
-                        <label>Teléfono</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="email" class="form-control" v-model="nuevoCliente.email" placeholder="Email">
-                        <label>Email</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-success" @@click="crearCliente">Crear</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- PAGINACIÓN -->
+    <nav aria-label="Paginación" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" :class="{ disabled: page === 1 }">
+          <a class="page-link" href="#" @@click.prevent="cambiarPagina(page - 1)">Anterior</a>
+        </li>
+        <li class="page-item" v-for="n in totalPages" :key="n" :class="{ active: n === page }">
+          <a class="page-link" href="#" @@click.prevent="cambiarPagina(n)">{{ n }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: page === totalPages }">
+          <a class="page-link" href="#" @@click.prevent="cambiarPagina(page + 1)">Siguiente</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 
-    <!-- Modal Confirmar Eliminación -->
-    <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content shadow rounded-4">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirmar Eliminación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    ¿Seguro que deseas eliminar al cliente <strong>{{ clienteSeleccionado.nombre }} {{ clienteSeleccionado.apellido }}</strong>?
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-danger" @@click="eliminarCliente">Eliminar</button>
-                </div>
+  <!-- Modal Editar Cliente -->
+  <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEditar }" style="display: block;"
+    v-if="showModalEditar">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <form v-on:submit.prevent="guardarCambios">
+          <div class="modal-header bg-warning text-white">
+            <h5 class="modal-title">✏️ Editar Cliente</h5>
+            <button type="button" class="btn-close" @@click="cerrarEditar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Nombre</label>
+              <input v-model="clienteEdit.nombre" class="form-control" required />
             </div>
-        </div>
+            <div class="mb-3">
+              <label>Apellido</label>
+              <input v-model="clienteEdit.apellido" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Teléfono</label>
+              <input v-model="clienteEdit.telefono" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input v-model="clienteEdit.email" type="email" class="form-control" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @@click="cerrarEditar">Cancelar</button>
+            <button type="submit" class="btn btn-warning">Guardar</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+
+  <!-- Modal Confirmar Eliminar -->
+  <div class="modal fade" tabindex="-1" role="dialog" :class="{ show: showModalEliminar }" style="display: block;"
+    v-if="showModalEliminar">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" @@click="cerrarEliminar"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Eliminar cliente <strong>{{ clienteEliminar?.nombre }} {{ clienteEliminar?.apellido }}</strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @@click="cerrarEliminar">Cancelar</button>
+          <button class="btn btn-danger" @@click="eliminarCliente">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-const { createApp, ref, onMounted, computed } = Vue;
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-createApp({
-    setup() {
+  <script>
+    // Interceptor para agregar el token JWT a todas las peticiones
+    axios.interceptors.request.use(config => {
+      const token = sessionStorage.getItem('jwt');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    }, error => Promise.reject(error));
+
+    // Interceptor para manejar errores globales (ej: 401)
+    axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (error.response && error.response.status === 401) {
+          alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+          localStorage.removeItem('jwt');
+          window.location.href = "/Identity/Account/Login"; // Ajusta si tu ruta de login es otra
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    const { createApp, ref, reactive, computed, watch, onMounted } = Vue;
+
+    createApp({
+      setup() {
         const clientes = ref([]);
-        const search = ref('');
+        const searchString = ref('');
+        const showModalEditar = ref(false);
+        const showModalEliminar = ref(false);
+        const clienteEdit = reactive({});
+        const clienteEliminar = ref(null);
         const page = ref(1);
-        const pageSize = ref(5);
+        const pageSize = ref(6);
         const total = ref(0);
-        const clienteSeleccionado = ref({});
-        const nuevoCliente = ref({ nombre: '', apellido: '', telefono: '', email: '' });
-        let modalEditar, modalCrear, modalConfirmarEliminar;
+
+        const errorMensaje = ref('');
+        const exitoMensaje = ref('');
 
         const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
-        const fetchClientes = async () => {
-            const params = new URLSearchParams({
-                page: page.value,
-                pageSize: pageSize.value,
-                search: search.value.trim()
-            });
-
-            const res = await fetch(`/api/ClientesApi/Paginado?${params.toString()}`);
-            const data = await res.json();
-            clientes.value = data.clientes;
-            total.value = data.total;
-        };
-
-        const siguiente = () => {
-            if (page.value < totalPages.value) {
-                page.value++;
-                fetchClientes();
-            }
-        };
-
-        const anterior = () => {
-            if (page.value > 1) {
-                page.value--;
-                fetchClientes();
-            }
-        };
-
-        const abrirEditar = (cliente) => {
-            clienteSeleccionado.value = { ...cliente };
-            modalEditar.show();
-        };
-
-        const guardarCambios = async () => {
-            const nombre = clienteSeleccionado.value.nombre?.trim();
-            const apellido = clienteSeleccionado.value.apellido?.trim();
-
-            if (!nombre || !apellido) {
-                alert("El nombre y el apellido son obligatorios.");
-                return;
-            }
-
-            const res = await fetch(`/api/ClientesApi/${clienteSeleccionado.value.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(clienteSeleccionado.value)
-            });
-
-            if (res.ok) {
-                fetchClientes();
-                modalEditar.hide();
-            } else {
-                const error = await res.text();
-                alert("Error al guardar los cambios: " + error);
-            }
-        };
-
-
-        const abrirCrear = () => {
-            nuevoCliente.value = { nombre: '', apellido: '', telefono: '', email: '' };
-            modalCrear.show();
-        };
-
-        const crearCliente = async () => {
-            const nombre = nuevoCliente.value.nombre?.trim();
-            const apellido = nuevoCliente.value.apellido?.trim();
-
-            if (!nombre || !apellido) {
-                alert("El nombre y el apellido son obligatorios.");
-                return;
-            }
-
-            const res = await fetch('/api/ClientesApi', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevoCliente.value)
-            });
-
-            if (res.ok) {
-                fetchClientes();
-                modalCrear.hide();
-            } else {
-                const error = await res.text();
-                alert("Error al crear el cliente: " + error);
-            }
-        };
-
-
-        const abrirConfirmarEliminar = (cliente) => {
-            clienteSeleccionado.value = cliente;
-            modalConfirmarEliminar.show();
-        };
-
-        const eliminarCliente = async () => {
-            const res = await fetch(`/api/ClientesApi/${clienteSeleccionado.value.id}`, { method: 'DELETE' });
-            if (res.ok) {
-                fetchClientes();
-                modalConfirmarEliminar.hide();
-            } else {
-                alert("No se pudo eliminar el cliente.");
-            }
-        };
-
-        onMounted(() => {
-            fetchClientes();
-            modalEditar = new bootstrap.Modal(document.getElementById('modalEditar'));
-            modalCrear = new bootstrap.Modal(document.getElementById('modalCrear'));
-            modalConfirmarEliminar = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
+        watch(page, () => fetchClientes());
+        watch(searchString, () => {
+          page.value = 1;
+          fetchClientes();
         });
 
+        async function fetchClientes() {
+          try {
+            const params = {
+              page: page.value,
+              pageSize: pageSize.value,
+              search: searchString.value
+            };
+
+            const res = await axios.get('/api/ClientesApi/Paginado', { params });
+            clientes.value = res.data.clientes;
+            total.value = res.data.total;
+          } catch (err) {
+            alert('Error al cargar clientes: ' + (err.response?.data || err.message));
+          }
+        }
+
+        function mostrarError(mensaje) {
+          errorMensaje.value = mensaje;
+          setTimeout(() => errorMensaje.value = '', 5000);
+        }
+
+        function mostrarExito(mensaje) {
+          exitoMensaje.value = mensaje;
+          setTimeout(() => exitoMensaje.value = '', 4000);
+        }
+
+        function cambiarPagina(nuevaPagina) {
+          if (nuevaPagina >= 1 && nuevaPagina <= totalPages.value) {
+            page.value = nuevaPagina;
+          }
+        }
+
+        function abrirEditar(cliente) {
+          Object.assign(clienteEdit, cliente);
+          showModalEditar.value = true;
+        }
+
+        function cerrarEditar() {
+          showModalEditar.value = false;
+          for (const key in clienteEdit) delete clienteEdit[key];
+        }
+
+        async function guardarCambios() {
+          try {
+            await axios.put(`/api/ClientesApi/${clienteEdit.id}`, clienteEdit);
+            cerrarEditar();
+            fetchClientes();
+            mostrarExito('✅ Cambios guardados correctamente.');
+          } catch (err) {
+            mostrarError('Error guardando cambios: ' + (err.response?.data || err.message));
+          }
+        }
+
+        function confirmarEliminar(cliente) {
+          clienteEliminar.value = cliente;
+          showModalEliminar.value = true;
+        }
+
+        function cerrarEliminar() {
+          showModalEliminar.value = false;
+          clienteEliminar.value = null;
+        }
+
+        async function eliminarCliente() {
+          try {
+            await axios.delete(`/api/ClientesApi/${clienteEliminar.value.id}`);
+            cerrarEliminar();
+            fetchClientes();
+            mostrarExito('✅ Cliente eliminado correctamente.');
+          } catch (err) {
+            mostrarError('Error eliminando cliente: ' + (err.response?.data || err.message));
+          }
+        }
+
+        onMounted(() => {
+          fetchClientes();
+        });
+
+        function resetPageAndFetch() {
+          page.value = 1;
+          fetchClientes();
+        }
+
         return {
-            clientes,
-            search,
-            page,
-            totalPages,
-            siguiente,
-            anterior,
-            fetchClientes,
-            clienteSeleccionado,
-            abrirEditar,
-            guardarCambios,
-            abrirCrear,
-            nuevoCliente,
-            crearCliente,
-            abrirConfirmarEliminar,
-            eliminarCliente
+          clientes,
+          searchString,
+          showModalEditar,
+          showModalEliminar,
+          clienteEdit,
+          clienteEliminar,
+          page,
+          pageSize,
+          total,
+          totalPages,
+          cambiarPagina,
+          abrirEditar,
+          cerrarEditar,
+          guardarCambios,
+          confirmarEliminar,
+          cerrarEliminar,
+          eliminarCliente,
+          resetPageAndFetch,
+          errorMensaje,
+          exitoMensaje,
         };
+      }
+    }).mount('#app');
+  </script>
+
+  <style>
+    .modal {
+      background-color: rgba(0, 0, 0, 0.5);
     }
-}).mount('#app');
-</script>
+
+    .modal.show {
+      display: block;
+    }
+  </style>
 }

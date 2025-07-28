@@ -1,0 +1,24 @@
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Gestión de Cuenta";
+}
+
+<div class="container py-4">
+    <div class="contenido-glass">
+        <h1 class="mb-3">@ViewData["Title"]</h1>
+        <p class="text-muted mb-4">Desde aquí podés gestionar tu perfil de usuario.</p>
+
+        <div class="row">
+            <nav class="col-md-3 mb-4">
+                <partial name="_ManageNav" />
+            </nav>
+
+            <main class="col-md-9">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    
+</div>
+
+@RenderSection("Scripts", required: false)

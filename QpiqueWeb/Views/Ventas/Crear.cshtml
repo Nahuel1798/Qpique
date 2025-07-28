@@ -1,0 +1,383 @@
+@{
+    ViewData["Title"] = "Crear Venta";
+}
+
+<div id="crearVentaApp" class="container-fluid py-4">
+    <div class="contenido-glass">
+        <h2 class="mb-4">Confirmar Venta</h2>
+        <div v-if="productos.length > 0">
+
+            <!-- Selección de cliente arriba -->
+            <div class="mb-4 d-flex align-items-center gap-3">
+                <input type="text" readonly class="form-control fw-bold"
+                    :value="clienteSeleccionado ? clienteSeleccionado.nombre + ' ' + clienteSeleccionado.apellido : ''"
+                    placeholder="Ningún cliente seleccionado" />
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSeleccionCliente"
+                    type="button">
+                    👤 Seleccionar Cliente
+                </button>
+            </div>
+
+            <!-- Lista de productos -->
+            <div class="row mb-3">
+                <div v-for="item in productos" :key="item.id" class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm rounded-3"
+                        :class="{ 'border-success': item.cantidad > 0, 'opacity-75': item.stock === 0 }">
+
+                        <!-- Imagen -->
+                        <img :src="item.imagenUrl || '/images/default-product.png'" class="card-img-top"
+                            style="height: 180px; object-fit: contain;" alt="Imagen producto">
+
+                        <!-- Contenido -->
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ item.nombre }}</h5>
+                            <p class="card-text">{{ item.descripcion }}</p>
+
+                            <p class="mb-1 text-success"><i class="bi bi-tag-fill me-1"></i>
+                                <strong>Precio:</strong> ${{ item.precio.toFixed(2) }}
+                            </p>
+                            <p class="mb-2 text-muted small"><i class="bi bi-box me-1"></i>
+                                <strong>Stock:</strong> {{ item.stock }}
+                            </p>
+
+                            <!-- Cantidad -->
+                            <div class="mb-2 d-flex align-items-center">
+                                <label class="me-2">Cantidad:</label>
+                                <div class="input-group input-group-sm" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        :disabled="item.cantidad <= 1" @@click="decrementarCantidad(item)">
+                                        -
+                                    </button>
+                                    <input type="number" class="form-control text-center" v-model.number="item.cantidad"
+                                        :min="1" :max="item.stock" />
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        :disabled="item.cantidad >= item.stock" @@click="incrementarCantidad(item)">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Subtotal -->
+                            <p class="mb-3 "><strong>Subtotal:</strong> ${{ (item.precio * item.cantidad).toFixed(2) }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total -->
+            <div class="mb-3 text-end text-white fs-5 fw-bold">
+                Total: ${{ totalVenta.toFixed(2) }}
+            </div>
+
+            <!-- Confirmar venta con spinner y validación -->
+            <div class="text-end">
+                <button class="btn btn-success" :disabled="!clienteSeleccionadoId || !cantidadValida() || cargando"
+                    @@click="confirmarVenta">
+                    <span v-if="cargando" class="spinner-border spinner-border-sm me-2"></span>
+                    ✅ Confirmar Venta
+                </button>
+            </div>
+        </div>
+        <div v-else>
+            <p class="text-muted">No hay productos seleccionados.</p>
+        </div>
+    </div>
+
+
+    <!-- MODAL SELECCIÓN CLIENTE -->
+    <div class="modal fade" id="modalSeleccionCliente" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seleccionar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Buscador y botón crear nuevo cliente -->
+                    <div class="input-group mb-3">
+                        <input v-model="busqueda" class="form-control" placeholder="Buscar por nombre o apellido..." />
+                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                            data-bs-target="#modalNuevoCliente">
+                            ➕ Nuevo Cliente
+                        </button>
+                    </div>
+
+                    <!-- Lista de clientes -->
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        <div class="col" v-for="cliente in clientes" :key="cliente.id">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body d-flex flex-column align-items-center text-center">
+                                    <img :src="'/img/avatar.png'" alt="Avatar" class="rounded-circle mb-3 shadow"
+                                        style="width: 80px; height: 80px; object-fit: cover;" />
+                                    <h5 class="card-title mb-2 text-primary fw-semibold">{{ cliente.nombre }} {{
+                                        cliente.apellido }}</h5>
+                                    <p class="text-muted mb-1"><i class="bi bi-telephone me-2"></i>{{ cliente.telefono
+                                        || 'Sin teléfono' }}</p>
+                                    <p class="text-muted mb-2"><i class="bi bi-envelope me-2"></i>{{ cliente.email ||
+                                        'Sin email' }}</p>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm w-100"
+                                    @@click="seleccionarCliente(cliente)">
+                                    Seleccionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paginación -->
+                    <nav class="mt-3">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" :class="{disabled: paginaActual === 1}">
+                                <button class="page-link"
+                                    @@click="paginaActual = Math.max(1, paginaActual - 1)">«</button>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">Página {{ paginaActual }}</span>
+                            </li>
+                            <li class="page-item"
+                                :class="{disabled: clientesFiltrados.length <= paginaActual * porPagina}">
+                                <button class="page-link"
+                                    @@click="paginaActual = Math.min(totalPaginas, paginaActual + 1)">»</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MINI MODAL CREAR CLIENTE -->
+    <div class="modal fade" id="modalNuevoCliente" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-success shadow-sm">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Nuevo Cliente</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Nombre</label>
+                        <input v-model="nuevoCliente.nombre" class="form-control" placeholder="Nombre..." />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Apellido</label>
+                        <input v-model="nuevoCliente.apellido" class="form-control" placeholder="Apellido..." />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Teléfono</label>
+                        <input v-model="nuevoCliente.telefono" class="form-control" placeholder="Opcional..." />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input v-model="nuevoCliente.email" class="form-control" placeholder="Opcional..." />
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-success" @@click="crearClienteDesdeModal">
+                            💾 Crear y Seleccionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMACIÓN DE VENTA -->
+    <div class="modal fade" id="modalVentaExitosa" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-success shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">✅ Venta realizada</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                    <p class="mt-3 fs-5">La venta se ha registrado exitosamente.</p>
+                    <p class="text-muted">Cliente: <strong>{{ clienteSeleccionado?.nombre }} {{
+                            clienteSeleccionado?.apellido }}</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/Ventas" class="btn btn-outline-primary">Ir al listado</a>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Quitar flechas de los inputs type="number" en Chrome, Safari, Edge, Opera */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Quitar flechas en Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const { createApp } = Vue;
+
+        axios.interceptors.request.use(config => {
+            const token = sessionStorage.getItem('jwt');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+        }, error => {
+            return Promise.reject(error);
+        });
+
+        axios.interceptors.response.use(response => {
+            return response;
+        }, error => {
+            if (error.response && error.response.status === 401) {
+                alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('jwt');
+                window.location.href = "/Identity/Account/Login";
+            }
+            return Promise.reject(error);
+        });
+        
+        createApp({
+            data() {
+                return {
+                    productos: [],
+                    clientes: [],
+                    clienteSeleccionadoId: '',
+                    clienteSeleccionado: null,
+
+                    busqueda: '',
+                    paginaActual: 1,
+                    porPagina: 4,
+
+                    nuevoCliente: {
+                        nombre: '',
+                        apellido: '',
+                        telefono: '',
+                        email: ''
+                    },
+
+                    cargando: false
+                };
+            },
+            computed: {
+                totalVenta() {
+                    return this.productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+                },
+                clientesFiltrados() {
+                    if (!this.busqueda) return this.clientes;
+                    const b = this.busqueda.toLowerCase();
+                    return this.clientes.filter(c =>
+                        c.nombre.toLowerCase().includes(b) || c.apellido.toLowerCase().includes(b)
+                    );
+                },
+                clientesFiltradosPaginados() {
+                    const start = (this.paginaActual - 1) * this.porPagina;
+                    return this.clientesFiltrados.slice(start, start + this.porPagina);
+                },
+                totalPaginas() {
+                    return Math.ceil(this.clientesFiltrados.length / this.porPagina);
+                }
+            },
+            methods: {
+                cantidadValida() {
+                    return this.productos.every(p => p.cantidad > 0 && p.cantidad <= p.stock);
+                },
+                cargarClientes() {
+                    axios.get('/api/ClientesApi')
+                        .then(res => { this.clientes = res.data; })
+                        .catch(err => { console.error('Error al cargar clientes', err); });
+                },
+                seleccionarCliente(cliente) {
+                    this.clienteSeleccionadoId = cliente.id;
+                    this.clienteSeleccionado = cliente;
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCliente'));
+                    if (modal) modal.hide();
+                },
+                crearClienteDesdeModal() {
+                    if (!this.nuevoCliente.nombre || !this.nuevoCliente.apellido) {
+                        alert('⚠️ Nombre y apellido obligatorios');
+                        return;
+                    }
+
+                    axios.post('/api/ClientesApi', this.nuevoCliente)
+                        .then(res => {
+                            this.clientes.push(res.data);
+                            this.seleccionarCliente(res.data);
+                            this.nuevoCliente = { nombre: '', apellido: '', telefono: '', email: '' };
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('modalNuevoCliente'));
+                            if (modal) modal.hide();
+                        })
+                        .catch(err => {
+                            alert('❌ Error al crear cliente');
+                            console.error(err);
+                        });
+                },
+                incrementarCantidad(item) {
+                    if (item.cantidad < item.stock) {
+                        item.cantidad++;
+                    }
+                },
+                decrementarCantidad(item) {
+                    if (item.cantidad > 1) {
+                        item.cantidad--;
+                    }
+                },
+
+                confirmarVenta() {
+                    if (!this.cantidadValida()) {
+                        alert("⚠️ Hay productos con cantidades inválidas.");
+                        return;
+                    }
+
+                    const detalles = this.productos.map(p => ({
+                        productoId: p.id,
+                        cantidad: p.cantidad
+                    }));
+
+                    const venta = {
+                        clienteId: this.clienteSeleccionadoId,
+                        detalles
+                    };
+
+                    this.cargando = true;
+
+                    axios.post('/api/VentasApi', venta)
+                        .then(() => {
+                            const modal = new bootstrap.Modal(document.getElementById('modalVentaExitosa'));
+                            modal.show();
+                            sessionStorage.removeItem('productosVenta');
+                        })
+                        .catch(err => {
+                            alert('❌ Error al realizar la venta');
+                            console.error(err);
+                        })
+                        .finally(() => {
+                            this.cargando = false;
+                        });
+                }
+            },
+            mounted() {
+                // Redirigir cuando se cierre el modal de venta exitosa
+                const modalElement = document.getElementById('modalVentaExitosa');
+                if (modalElement) {
+                    modalElement.addEventListener('hidden.bs.modal', () => {
+                        window.location.href = '/Ventas/Index'; // Cambia esta ruta si querés otro destino
+                    });
+                }
+
+                const data = sessionStorage.getItem('productosVenta');
+                this.productos = data ? JSON.parse(data) : [];
+                this.cargarClientes();
+            }
+        }).mount('#crearVentaApp');
+    </script>
+}

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Formats.Tar;
 using System.Threading.Tasks;
-using QpiqueWeb.Models; // Asegúrate de que este namespace es correcto para tu proyecto
+using QpiqueWeb.Models; 
 
 [Authorize]
 [ApiController]
@@ -17,6 +17,7 @@ public class UserInfoController : ControllerBase
         _userManager = userManager;
     }
 
+    // GET: api/UserInfo/roles
     [HttpGet("roles")]
     public async Task<IActionResult> GetRoles()
     {

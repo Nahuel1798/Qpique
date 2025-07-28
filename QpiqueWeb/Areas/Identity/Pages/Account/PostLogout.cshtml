@@ -1,0 +1,24 @@
+@page
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hasta luego</title>
+    <script>
+        sessionStorage.clear();
+        localStorage.removeItem("jwt");
+
+        setTimeout(() => {
+            window.location.href = '/Identity/Account/Login';
+        }, 800);
+    </script>
+</head>
+<body style="display:flex;align-items:center;justify-content:center;height:100vh;">
+    <div>
+        <h2>👋 Cerrando sesión...</h2>
+    </div>
+</body>
+</html>

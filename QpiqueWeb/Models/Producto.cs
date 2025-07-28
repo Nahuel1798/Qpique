@@ -24,9 +24,9 @@ public class Producto
     [Required]
     [Range(0, int.MaxValue, ErrorMessage = "El stock debe ser un número positivo.")]
     public int Stock { get; set; }
+    public bool Estado { get; set; } = false;
     [Required]
     [Display(Name = "Categoría")]
-
     public int CategoriaId { get; set; }
     [ForeignKey("CategoriaId")]
     public Categoria? Categoria { get; set; }

@@ -13,6 +13,37 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    public IActionResult Nosotros()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult Contacto()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EnviarContacto(string Nombre, string Email, string Mensaje)
+    {
+        if (string.IsNullOrWhiteSpace(Nombre) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Mensaje))
+        {
+            ModelState.AddModelError(string.Empty, "Todos los campos son obligatorios.");
+            return View("Contacto");
+        }
+
+        // Aquí procesarías el formulario: enviar email, guardar en base de datos, etc.
+        // Por ahora vamos a mostrar un mensaje simple y volver a la página.
+
+        TempData["MensajeExito"] = "Gracias por contactarnos. Te responderemos pronto.";
+
+        return RedirectToAction("Contacto");
+    }
+
+
+
     public IActionResult Index()
     {
         return View();

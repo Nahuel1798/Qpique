@@ -56,23 +56,43 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Display(Name = "Nombre")]
+            [Required]
+            public string Nombre { get; set; }
+
+            [Display(Name = "Apellido")]
+            [Required]
+            public string Apellido { get; set; }
+
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Número de teléfono")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Rol")]
+            public string Rol { get; set; }
+
+            [Display(Name = "Avatar")]
+            public IFormFile AvatarNuevo { get; set; }
+
+            public string AvatarActual { get; set; }
         }
 
         private async Task LoadAsync(Usuario user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
+            var roles = await _userManager.GetRolesAsync(user);
+            var rolActual = roles.FirstOrDefault();
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                Nombre = user.Nombre,
+                Apellido = user.Apellido,
+                PhoneNumber = phoneNumber,
+                Rol = rolActual,
+                AvatarActual = user.Avatar
             };
         }
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -91,7 +111,7 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"No se pudo cargar el usuario con ID '{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -100,19 +120,54 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // Nombre y Apellido
+            user.Nombre = Input.Nombre;
+            user.Apellido = Input.Apellido;
+
+            // Teléfono
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Error inesperado al intentar configurar el número de teléfono.";
                     return RedirectToPage();
                 }
             }
 
+            // Avatar
+            if (Input.AvatarNuevo != null && Input.AvatarNuevo.Length > 0)
+            {
+                var carpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "avatars");
+                Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(Input.AvatarNuevo.FileName)}";
+                var rutaArchivo = Path.Combine(carpeta, nombreArchivo);
+
+                using (var stream = new FileStream(rutaArchivo, FileMode.Create))
+                {
+                    await Input.AvatarNuevo.CopyToAsync(stream);
+                }
+
+                user.Avatar = "/img/avatars/" + nombreArchivo;
+            }
+
+            // Rol (opcional, solo si el usuario tiene permiso para cambiarlo)
+            var rolesActuales = await _userManager.GetRolesAsync(user);
+            var rolActual = rolesActuales.FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(Input.Rol) && Input.Rol != rolActual)
+            {
+                if (rolActual != null)
+                    await _userManager.RemoveFromRoleAsync(user, rolActual);
+
+                await _userManager.AddToRoleAsync(user, Input.Rol);
+            }
+
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Tu perfil ha sido actualizado";
             return RedirectToPage();
         }
     }

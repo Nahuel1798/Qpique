@@ -29,6 +29,14 @@ namespace QpiqueWeb.Controllers
         {
             return View();
         }
-
+        // GET: Ventas/Crear
+        public IActionResult Crear()
+        {
+            return View();
+        }
+        public IActionResult Ganancias()
+        {
+            return View();
+        }
     }
 }

@@ -1,5 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licenciado a la .NET Foundation bajo uno o más acuerdos.
+// La .NET Foundation le otorga esta licencia bajo la licencia MIT.
 #nullable disable
 
 using System;
@@ -25,8 +25,8 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
         }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la interfaz de usuario predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en futuras versiones.
         /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
@@ -40,12 +40,12 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{userId}'.");
+                return NotFound($"No se pudo cargar el usuario con ID '{userId}'.");
             }
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            StatusMessage = result.Succeeded ? "Gracias por confirmar su correo electrónico." : "Error al confirmar su correo electrónico.";
             return Page();
         }
     }

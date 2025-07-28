@@ -1,5 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Licenciado a la .NET Foundation bajo uno o más acuerdos.
+// La .NET Foundation le otorga esta licencia bajo la licencia MIT.
 #nullable disable
 
 using System;
@@ -25,47 +25,49 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
         }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la IU predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en versiones futuras.
         /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        ///     Esta API es compatible con la infraestructura de la IU predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+        ///     directamente desde su código. Esta API puede cambiar o eliminarse en versiones futuras.
         /// </summary>
         public class InputModel
         {
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la IU predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en versiones futuras.
             /// </summary>
             [Required]
             [EmailAddress]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la IU predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en versiones futuras.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} y como máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la IU predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en versiones futuras.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar contraseña")]
+            [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
             public string ConfirmPassword { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Esta API es compatible con la infraestructura de la IU predeterminada de ASP.NET Core Identity y no está destinada a ser utilizada
+            ///     directamente desde su código. Esta API puede cambiar o eliminarse en versiones futuras.
             /// </summary>
             [Required]
             public string Code { get; set; }
@@ -76,7 +78,7 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
         {
             if (code == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("Debe proporcionar un código para restablecer la contraseña.");
             }
             else
             {
@@ -98,7 +100,7 @@ namespace QpiqueWeb.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
+                // No revelar que el usuario no existe
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 

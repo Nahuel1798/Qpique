@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "JyeoOPTFe24=",
+  "dgSpecHash": "qG0yA0RWsLw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\QpiqueWeb.csproj",
+  "projectFilePath": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\QpiqueWeb.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Nahuel\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\Nahuel\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

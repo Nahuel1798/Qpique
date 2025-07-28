@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QpiqueWeb.Data;
 using QpiqueWeb.Models;
-using QpiqueWeb.Models.Dto;
 
 namespace QpiqueWeb.Controllers.Api
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ClientesApiController : ControllerBase
@@ -16,9 +18,10 @@ namespace QpiqueWeb.Controllers.Api
         {
             _context = context;
         }
+
         // GET: api/ClientesApi
         [HttpGet]
-        public async Task<IActionResult> GetTodos()
+        public async Task<IActionResult> GetClientes()
         {
             var clientes = await _context.Clientes
                 .OrderBy(c => c.Apellido)
@@ -36,14 +39,13 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(clientes);
         }
 
-
-        // GET: api/ClientesApi/Paginado?page=1&pageSize=10&search=juan
+        // GET: api/ClientesApi/Paginado?page=1&pageSize=10&search=nombre
         [HttpGet("Paginado")]
-        public async Task<IActionResult> GetClientesPaginado([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string search = "")
+        public async Task<IActionResult> GetClientesPaginado(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string search = "")
         {
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 10;
-
             var query = _context.Clientes.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -51,8 +53,7 @@ namespace QpiqueWeb.Controllers.Api
                 var lowered = search.ToLower();
                 query = query.Where(c =>
                     c.Nombre.ToLower().Contains(lowered) ||
-                    c.Apellido.ToLower().Contains(lowered)
-                );
+                    c.Apellido.ToLower().Contains(lowered));
             }
 
             var total = await query.CountAsync();
@@ -72,24 +73,17 @@ namespace QpiqueWeb.Controllers.Api
                 })
                 .ToListAsync();
 
-            return Ok(new
-            {
-                total,
-                clientes
-            });
+            return Ok(new { total, clientes });
         }
 
-
-        // GET: api/ClientesApi/Buscar?nombre=juan
+        // GET: api/ClientesApi/Buscar?nombre
         [HttpGet("Buscar")]
         public async Task<IActionResult> BuscarClientes([FromQuery] string nombre)
         {
             var filtro = nombre?.Trim().ToLower() ?? "";
 
             var clientes = await _context.Clientes
-                .Where(c =>
-                    c.Nombre.ToLower().Contains(filtro) ||
-                    c.Apellido.ToLower().Contains(filtro))
+                .Where(c => c.Nombre.ToLower().Contains(filtro) || c.Apellido.ToLower().Contains(filtro))
                 .OrderBy(c => c.Apellido)
                 .ThenBy(c => c.Nombre)
                 .Select(c => new ClienteDto
@@ -105,9 +99,9 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(clientes);
         }
 
-        // GET: api/ClientesApi/5
+        // GET: api/ClientesApi/id
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetClientePorId(int id)
+        public async Task<IActionResult> GetCliente(int id)
         {
             var cliente = await _context.Clientes
                 .Where(c => c.Id == id)
@@ -129,7 +123,7 @@ namespace QpiqueWeb.Controllers.Api
 
         // POST: api/ClientesApi
         [HttpPost]
-        public async Task<IActionResult> CrearCliente([FromBody] ClienteDto dto)
+        public async Task<IActionResult> PostCliente([FromBody] ClienteDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Nombre) || string.IsNullOrWhiteSpace(dto.Apellido))
                 return BadRequest("El nombre y apellido son obligatorios.");
@@ -138,42 +132,47 @@ namespace QpiqueWeb.Controllers.Api
             {
                 Nombre = dto.Nombre.Trim(),
                 Apellido = dto.Apellido.Trim(),
-                Telefono = (dto.Telefono ?? string.Empty).Trim(),
-                Email = (dto.Email ?? string.Empty).Trim()
+                Telefono = (dto.Telefono ?? "").Trim(),
+                Email = (dto.Email ?? "").Trim()
             };
 
             _context.Clientes.Add(cliente);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return CreatedAtAction(nameof(GetCliente), new { id = cliente.Id }, new
+            {
+                cliente.Id,
+                cliente.Nombre,
+                cliente.Apellido,
+                cliente.Email
+            });
         }
 
         // PUT: api/ClientesApi/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditarCliente(int id, [FromBody] ClienteDto dto)
+        public async Task<IActionResult> PutCliente(int id, [FromBody] ClienteDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Nombre) || string.IsNullOrWhiteSpace(dto.Apellido))
-                return BadRequest("El nombre y apellido son obligatorios.");
-                
             if (id != dto.Id)
                 return BadRequest("El ID del cliente no coincide.");
+
+            if (string.IsNullOrWhiteSpace(dto.Nombre) || string.IsNullOrWhiteSpace(dto.Apellido))
+                return BadRequest("El nombre y apellido son obligatorios.");
 
             var cliente = await _context.Clientes.FindAsync(id);
             if (cliente == null)
                 return NotFound("Cliente no encontrado.");
 
-            // Actualizar propiedades
             cliente.Nombre = dto.Nombre.Trim();
             cliente.Apellido = dto.Apellido.Trim();
-            cliente.Telefono = (dto.Telefono ?? string.Empty).Trim();
-            cliente.Email = (dto.Email ?? string.Empty).Trim();
+            cliente.Telefono = (dto.Telefono ?? "").Trim();
+            cliente.Email = (dto.Email ?? "").Trim();
 
             try
             {
                 await _context.SaveChangesAsync();
                 return Ok("Cliente actualizado correctamente.");
             }
-            catch (DbUpdateException)
+            catch
             {
                 return StatusCode(500, "Error al actualizar el cliente.");
             }
@@ -181,22 +180,33 @@ namespace QpiqueWeb.Controllers.Api
 
         // DELETE: api/ClientesApi/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> BorrarCliente(int id)
+        public async Task<IActionResult> DeleteCliente(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
             if (cliente == null)
                 return NotFound("Cliente no encontrado.");
 
             _context.Clientes.Remove(cliente);
+
             try
             {
                 await _context.SaveChangesAsync();
                 return Ok("Cliente eliminado correctamente.");
             }
-            catch (DbUpdateException)
+            catch
             {
                 return StatusCode(500, "Error al eliminar el cliente.");
             }
+        }
+
+        // DTO para Cliente
+        public class ClienteDto
+        {
+            public int Id { get; set; }
+            public string Nombre { get; set; }
+            public string Apellido { get; set; }
+            public string Telefono { get; set; }
+            public string Email { get; set; }
         }
     }
 }

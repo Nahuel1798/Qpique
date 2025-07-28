@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Contacto - Qpique";
+}
+
+<div class="container-fluid mt-3 mb-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-primary fw-bold"><i class="bi bi-envelope-fill me-2"></i>Contáctanos</h2>
+    <p class="mb-4 text-muted">
+        ¿Tenés alguna consulta o querés más información? Completá el formulario y te responderemos a la brevedad.
+    </p>
+
+    <form method="post" asp-action="EnviarContacto" asp-controller="Home" novalidate>
+        <div class="mb-3">
+            <label for="nombre" class="form-label fw-semibold">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="Nombre" required maxlength="100" />
+            <div class="invalid-feedback">
+                Por favor, ingresá tu nombre.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label fw-semibold">Correo electrónico</label>
+            <input type="email" class="form-control" id="email" name="Email" required />
+            <div class="invalid-feedback">
+                Por favor, ingresá un correo válido.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="mensaje" class="form-label fw-semibold">Mensaje</label>
+            <textarea class="form-control" id="mensaje" name="Mensaje" rows="5" required maxlength="1000"></textarea>
+            <div class="invalid-feedback">
+                Por favor, escribí tu mensaje.
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Enviar</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Bootstrap 5 form validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('form');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}

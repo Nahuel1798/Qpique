@@ -1,247 +1,347 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\QpiqueWeb.bundle.scp.css",
-      "PackagePath": "staticwebassets\\QpiqueWeb.bundle.scp.css"
-    },
-    {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\css\\site.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\favicon.ico",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\js\\site.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\FondoNuevo.jpeg",
+      "PackagePath": "staticwebassets\\img\\FondoNuevo.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\FotoIndex.jpeg",
+      "PackagePath": "staticwebassets\\img\\FotoIndex.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\QpiqueLogo.jpeg",
+      "PackagePath": "staticwebassets\\img\\QpiqueLogo.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatar.png",
+      "PackagePath": "staticwebassets\\img\\avatar.png"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatars\\0506e8e5-9ad9-4531-9a88-d5498e7c73f4.jpeg",
+      "PackagePath": "staticwebassets\\img\\avatars\\0506e8e5-9ad9-4531-9a88-d5498e7c73f4.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatars\\070a8af2-6b79-48d9-9dbd-c489c5c41aad.jpg",
+      "PackagePath": "staticwebassets\\img\\avatars\\070a8af2-6b79-48d9-9dbd-c489c5c41aad.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatars\\32eeb85f-e3cd-457f-9b37-8fd2743bb533.jpg",
+      "PackagePath": "staticwebassets\\img\\avatars\\32eeb85f-e3cd-457f-9b37-8fd2743bb533.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatars\\62e55904-2e47-4cbf-bf1e-208ebad0ce62.jpg",
+      "PackagePath": "staticwebassets\\img\\avatars\\62e55904-2e47-4cbf-bf1e-208ebad0ce62.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatars\\b675477a-6479-4d74-9b99-fc722809b048.jpg",
+      "PackagePath": "staticwebassets\\img\\avatars\\b675477a-6479-4d74-9b99-fc722809b048.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\avatars\\fee9b4cc-9b43-4183-a244-a29ed94c6747.jpeg",
+      "PackagePath": "staticwebassets\\img\\avatars\\fee9b4cc-9b43-4183-a244-a29ed94c6747.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\15baa3be-982a-4270-8635-8887d47d1842.jpg",
+      "PackagePath": "staticwebassets\\img\\categorias\\15baa3be-982a-4270-8635-8887d47d1842.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\168ee885-02b3-45fe-b082-c74bc55eb60c.png",
+      "PackagePath": "staticwebassets\\img\\categorias\\168ee885-02b3-45fe-b082-c74bc55eb60c.png"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\2e2abb23-dad7-48aa-ba4a-35514b912da0.jpg",
+      "PackagePath": "staticwebassets\\img\\categorias\\2e2abb23-dad7-48aa-ba4a-35514b912da0.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\3e75394c-22e8-4900-b53e-99d3c38d47a9.jpg",
+      "PackagePath": "staticwebassets\\img\\categorias\\3e75394c-22e8-4900-b53e-99d3c38d47a9.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\7695ea56-1565-410b-8cef-883a5c5932c4.jpg",
+      "PackagePath": "staticwebassets\\img\\categorias\\7695ea56-1565-410b-8cef-883a5c5932c4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\b9b78761-e551-4d1d-a7f6-4b53b9aff2a3.jpg",
+      "PackagePath": "staticwebassets\\img\\categorias\\b9b78761-e551-4d1d-a7f6-4b53b9aff2a3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\categorias\\fde4c6c5-5a79-4e68-9557-0773ccc03d99.png",
+      "PackagePath": "staticwebassets\\img\\categorias\\fde4c6c5-5a79-4e68-9557-0773ccc03d99.png"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\08ae604a-be58-457a-b3a9-8a485ef15177.png",
+      "PackagePath": "staticwebassets\\img\\productos\\08ae604a-be58-457a-b3a9-8a485ef15177.png"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\1aa12ad9-a1cb-4cf1-b11a-3a8df8032616.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\1aa12ad9-a1cb-4cf1-b11a-3a8df8032616.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\40f9244e-a404-49d8-80a8-cf68ffdddb78.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\40f9244e-a404-49d8-80a8-cf68ffdddb78.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\4228304e-e9c9-409b-9d3a-2dbb12ccb43b.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\4228304e-e9c9-409b-9d3a-2dbb12ccb43b.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\4e6790fa-cd9c-4890-80f1-e5b02c965600.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\4e6790fa-cd9c-4890-80f1-e5b02c965600.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\6e17959f-f1ec-4d5c-974e-571120ac7269.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\6e17959f-f1ec-4d5c-974e-571120ac7269.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\75ed38a4-8e37-4edf-8543-eec048cfe299.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\75ed38a4-8e37-4edf-8543-eec048cfe299.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\790949f8-2a27-4da4-a773-414cb6437ad3.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\790949f8-2a27-4da4-a773-414cb6437ad3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\826d40c0-1e4a-43b0-83db-b39d907012e8.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\826d40c0-1e4a-43b0-83db-b39d907012e8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\LICENSE",
       "PackagePath": "staticwebassets\\lib\\bootstrap"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
       "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\LICENSE.txt",
       "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\dist\\jquery.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
     },
     {
-      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {

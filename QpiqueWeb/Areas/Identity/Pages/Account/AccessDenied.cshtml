@@ -1,10 +1,22 @@
 ﻿@page
 @model AccessDeniedModel
 @{
-    ViewData["Title"] = "Access denied";
+    ViewData["Title"] = "Acceso Denegado";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">You do not have access to this resource.</p>
-</header>
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+    <div class="text-center p-4 rounded shadow-sm border border-danger bg-light">
+        <h1 class="display-4 text-danger mb-3">@ViewData["Title"]</h1>
+        <p class="fs-5 text-danger mb-4">No tienes acceso a este recurso.</p>
+        <a asp-page="/Index" class="btn btn-danger px-4 me-2">
+            <i class="bi bi-arrow-left-circle me-1"></i> Volver al Inicio
+        </a>
+        <button class="btn btn-outline-danger" onclick="history.back()">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Volver Atrás
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+}

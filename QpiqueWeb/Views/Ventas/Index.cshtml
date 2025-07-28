@@ -2,308 +2,738 @@
     ViewData["Title"] = "Administrar Ventas";
 }
 
-<div id="app" class="container py-4">
-    <h2 class="mb-4">Administrar Ventas</h2>
-
-    <!-- FILTROS -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <label for="filtroMes" class="form-label">Mes (YYYY-MM)</label>
-            <input type="month" id="filtroMes" v-model="filtros.mes" @@change="cargarVentas" class="form-control" />
+<div id="app" class="container-fluid py-4">
+    <!-- TOASTS DE NOTIFICACIONES -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div class="toast align-items-center text-bg-danger border-0 show" role="alert" v-if="errorMensaje">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ errorMensaje }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    @@click="errorMensaje = ''"></button>
+            </div>
         </div>
-        <div class="col-md-3">
-            <label for="filtroCliente" class="form-label">Cliente</label>
-            <input type="text" id="filtroCliente" v-model="filtros.cliente" @@input="debounceCargar" placeholder="Nombre cliente" class="form-control" />
-        </div>
-        <div class="col-md-3">
-            <label for="filtroProducto" class="form-label">Producto</label>
-            <input type="text" id="filtroProducto" v-model="filtros.producto" @@input="debounceCargar" placeholder="Nombre producto" class="form-control" />
-        </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-secondary w-100" @@click="resetFiltros">Limpiar filtros</button>
+        <div class="toast align-items-center text-bg-success border-0 show" role="alert" v-if="exitoMensaje">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ exitoMensaje }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    @@click="exitoMensaje = ''"></button>
+            </div>
         </div>
     </div>
+    <div class="contenido-glass">
+        <h2 class="mb-4"><i class="bi bi-cart-check me-2"></i> Administrar Ventas</h2>
+        <!-- FILTROS -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label for="filtroFechaDesde" class="form-label">Fecha Desde</label>
+                <input type="date" id="filtroFechaDesde" v-model="filtros.fechaDesde" @@input="debounceCargar"
+                    class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="filtroFechaHasta" class="form-label">Fecha Hasta</label>
+                <input type="date" id="filtroFechaHasta" v-model="filtros.fechaHasta" @@input="debounceCargar"
+                    class="form-control" />
+            </div>
 
-    <!-- TABLA VENTAS -->
-    <table class="table table-striped table-hover">
-        <thead class="table-primary">
-            <tr>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="venta in ventas" :key="venta.id">
-                <td>{{ formatFecha(venta.fecha) }}</td>
-                <td>{{ venta.clienteNombre }}</td>
-                <td>${{ venta.total.toFixed(2) }}</td>
-                <td>
-                    <button class="btn btn-sm btn-info me-2" @@click="abrirModalEditar(venta)">Editar</button>
-                    <button class="btn btn-sm btn-danger" @@click="borrarVenta(venta.id)">Eliminar</button>
-                </td>
-            </tr>
-            <tr v-if="ventas.length === 0">
-                <td colspan="4" class="text-center">No se encontraron ventas.</td>
-            </tr>
-        </tbody>
-    </table>
+            <div class="col-md-3">
+                <label for="filtroCliente" class="form-label">Cliente</label>
+                <input type="text" id="filtroCliente" v-model="filtros.cliente" @@input="debounceCargar"
+                    placeholder="Nombre cliente" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="filtroProducto" class="form-label">Producto</label>
+                <input type="text" id="filtroProducto" v-model="filtros.producto" @@input="debounceCargar"
+                    placeholder="Nombre producto" class="form-control" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-secondary w-100" @@click="resetFiltros">Limpiar filtros</button>
+            </div>
+        </div>
 
-    <!-- PAGINACION -->
-    <nav aria-label="Paginación">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" :class="{ disabled: filtros.page === 1 }">
-                <a class="page-link" href="#" @@click.prevent="cambiarPagina(filtros.page - 1)">Anterior</a>
-            </li>
-            <li class="page-item" v-for="p in totalPaginas" :key="p" :class="{ active: p === filtros.page }">
-                <a class="page-link" href="#" @@click.prevent="cambiarPagina(p)">{{ p }}</a>
-            </li>
-            <li class="page-item" :class="{ disabled: filtros.page === totalPaginas }">
-                <a class="page-link" href="#" @@click.prevent="cambiarPagina(filtros.page + 1)">Siguiente</a>
-            </li>
-        </ul>
-    </nav>
+        <!-- LISTA VENTAS EN CARDS -->
+        <div v-if="ventas.length === 0" class="text-center my-5">
+            <p>No se encontraron ventas.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4" v-else>
+            <div class="col" v-for="venta in ventas" :key="venta.id">
+                <div class="card shadow-sm card-venta">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Venta #{{ venta.id }}</strong><br />
+                            <small>{{ formatFecha(venta.fecha) }}</small><br />
+                            <small>Cliente: {{ venta.clienteNombre }}</small>
+                        </div>
+                        <div class="text-end d-flex flex-column align-items-end gap-2">
+                            <h5 class="text-primary mb-2">${{ venta.total.toFixed(2) }}</h5>
+                            <div class="btn-group" role="group" aria-label="Acciones venta">
+                                <button class="btn btn-sm btn-outline-primary" @@click="abrirModalEditar(venta)"
+                                    aria-label="Editar venta">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" @@click="borrarVenta(venta.id)"
+                                    aria-label="Eliminar venta">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6>Detalles:</h6>
+                        <table class="table table-sm table-bordered mb-0 tabla-productos">
+
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Imagen</th> <!-- Nueva columna -->
+                                    <th>Producto</th>
+                                    <th class="text-center" style="width: 70px;">Cantidad</th>
+                                    <th class="text-end" style="width: 100px;">Precio Unit.</th>
+                                    <th class="text-end" style="width: 100px;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(detalle, i) in venta.detalles.slice(0, 4)" :key="detalle.productoId">
+                                    <td class="text-center">
+                                        <img :src="detalle.imagenUrl || '/images/default-product.png'" alt="Imagen"
+                                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem; border: 1px solid #ccc;">
+                                    </td>
+                                    <td>{{ detalle.productoNombre }}</td>
+                                    <td class="text-center">{{ detalle.cantidad }}</td>
+                                    <td class="text-end">${{ detalle.precioUnitario.toFixed(2) }}</td>
+                                    <td class="text-end">${{ (detalle.precioUnitario * detalle.cantidad).toFixed(2) }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div v-if="venta.detalles.length > 4" class="text-center mt-2">
+                            <button class="btn btn-link btn-sm" @@click="abrirModalDetalles(venta)">Ver más
+                                productos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGINACION -->
+        <nav aria-label="Paginación" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{ disabled: filtros.page === 1 }">
+                    <a class="page-link" href="#" @@click.prevent="cambiarPagina(filtros.page - 1)">Anterior</a>
+                </li>
+                <li class="page-item" v-for="p in totalPaginas" :key="p" :class="{ active: p === filtros.page }">
+                    <a class="page-link" href="#" @@click.prevent="cambiarPagina(p)">{{ p }}</a>
+                </li>
+                <li class="page-item" :class="{ disabled: filtros.page === totalPaginas }">
+                    <a class="page-link" href="#" @@click.prevent="cambiarPagina(filtros.page + 1)">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 
     <!-- MODAL EDITAR VENTA -->
-    <div class="modal fade" id="modalEditarVenta" tabindex="-1" aria-labelledby="modalEditarVentaLabel" aria-hidden="true" ref="modalEditarVenta">
+    <div class="modal fade" id="modalEditarVenta" tabindex="-1" aria-labelledby="modalEditarVentaLabel"
+        aria-hidden="true" ref="modalEditarVenta">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEditarVentaLabel">Editar Venta #{{ ventaEditando?.id }}</h5>
-                <button type="button" class="btn-close" @@click="cerrarModalEditar" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body" v-if="ventaEditando">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarVentaLabel">Editar Venta #{{ ventaEditando?.id }}</h5>
+                    <button type="button" class="btn-close" @@click="cerrarModalEditar" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" v-if="ventaEditando">
 
-                <p><strong>Cliente:</strong> {{ ventaEditando.clienteNombre }}</p>
-                <p><strong>Fecha:</strong> {{ formatFecha(ventaEditando.fecha) }}</p>
+                    <p><strong>Cliente:</strong> {{ ventaEditando.clienteNombre }}</p>
+                    <p><strong>Fecha:</strong> {{ formatFecha(ventaEditando.fecha) }}</p>
 
-                <!-- Agregar producto -->
-                <div class="mb-3">
-                    <label for="selectProducto" class="form-label">Agregar Producto</label>
-                    <select id="selectProducto" v-model="productoSeleccionadoId" class="form-select">
-                        <option value="">-- Seleccione un producto --</option>
-                        <option v-for="prod in productosDisponibles" :key="prod.id" :value="prod.id">
-                            {{ prod.nombre }} (Stock: {{ prod.stock }}, Precio: ${{ prod.precio.toFixed(2) }})
-                        </option>
-                    </select>
-                    <button class="btn btn-sm btn-success mt-2" @@click="agregarProductoVenta" :disabled="!productoSeleccionadoId">
-                        Agregar al detalle
+                    <!-- Botón para abrir modal productos -->
+                    <button class="btn btn-sm btn-primary mb-3" @@click="abrirModalProductos">
+                        Agregar Producto
+                    </button>
+
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th style="width:120px;">Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                                <th style="width: 40px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(detalle, idx) in ventaEditando.detalles" :key="detalle.productoId">
+                                <td>
+                                    <img :src="detalle.imagenUrl" alt="Imagen del producto" class="img-fluid"
+                                        style="max-width: 80px; height: 60px; object-fit: cover; border-radius: 0.25rem; border: 1px solid #ccc;" />
+
+                                </td>
+                                <td>{{ detalle.productoNombre }}</td>
+                                <td>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            @@click="detalle.cantidad = Math.max(1, detalle.cantidad - 1)">−</button>
+                                        <input type="number" v-model.number="detalle.cantidad" min="1"
+                                            class="form-control text-center" style="max-width: 60px;" />
+                                        <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            @@click="detalle.cantidad++">+</button>
+                                    </div>
+                                </td>
+                                <td>${{ detalle.precioUnitario.toFixed(2) }}</td>
+                                <td>${{ (detalle.precioUnitario * detalle.cantidad).toFixed(2) }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" @@click="quitarProducto(idx)">✖</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-end">Total</th>
+                                <th>${{ totalEditando.toFixed(2) }}</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @@click="cerrarModalEditar">Cancelar</button>
+                    <button class="btn btn-primary" @@click="guardarCambios" :disabled="cargandoGuardar">
+                        {{ cargandoGuardar ? 'Guardando...' : 'Guardar Cambios' }}
                     </button>
                 </div>
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th style="width:120px;">Cantidad</th>
-                            <th>Precio Unitario</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(detalle, idx) in ventaEditando.detalles" :key="idx">
-                            <td>{{ detalle.productoNombre }}</td>
-                            <td>
-                                <input type="number" v-model.number="detalle.cantidad" min="1" class="form-control" />
-                            </td>
-                            <td>${{ detalle.precioUnitario.toFixed(2) }}</td>
-                            <td>${{ (detalle.precioUnitario * detalle.cantidad).toFixed(2) }}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="3" class="text-end">Total</th>
-                            <th>${{ totalEditando.toFixed(2) }}</th>
-                        </tr>
-                    </tfoot>
-                </table>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" @@click="cerrarModalEditar">Cancelar</button>
-                <button class="btn btn-primary" @@click="guardarCambios" :disabled="cargandoGuardar">
-                    {{ cargandoGuardar ? 'Guardando...' : 'Guardar Cambios' }}
-                </button>
-            </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL PRODUCTOS DISPONIBLES -->
+    <div class="modal fade" id="modalProductos" tabindex="-1" aria-labelledby="modalProductosLabel" aria-hidden="true"
+        ref="modalProductos">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalProductosLabel">Productos Disponibles</h5>
+                    <button type="button" class="btn-close" @@click="cerrarModalProductos" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Buscador y filtro de categoría -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-8">
+                            <input type="text" v-model="busquedaProducto" placeholder="Buscar producto..."
+                                class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <select v-model="categoriaSeleccionada" class="form-select">
+                                <option value="">Todas las categorías</option>
+                                <option v-for="cat in categorias" :key="cat.id" :value="cat.id">{{ cat.nombre }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Grid de productos -->
+                    <div class="row row-cols-1 row-cols-md-3 g-3">
+                        <div class="col" v-for="prod in productosFiltradosPaginados" :key="prod.id">
+                            <div class="card h-100 shadow-sm">
+                                <img :src="prod.imagenUrl || '/images/default-product.png'" class="card-img-top"
+                                    alt="Imagen producto" style="object-fit: contain; max-height: 180px;">
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title">{{ prod.nombre }}</h6>
+                                    <p class="card-text mb-1">Precio: ${{ prod.precio.toFixed(2) }}</p>
+                                    <p class="card-text mb-2">Stock: {{ prod.stock }}</p>
+                                    <button class="btn btn-sm btn-success mt-auto"
+                                        @@click="agregarProductoDesdeModal(prod)">
+                                        Agregar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paginación modal productos -->
+                    <nav aria-label="Paginación productos" class="mt-3">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item" :class="{ disabled: paginaProductos === 1 }">
+                                <a class="page-link" href="#" @@click.prevent="paginaProductos--">Anterior</a>
+                            </li>
+                            <li class="page-item" v-for="p in totalPaginasProductos" :key="p"
+                                :class="{ active: p === paginaProductos }">
+                                <a class="page-link" href="#" @@click.prevent="paginaProductos = p">{{ p }}</a>
+                            </li>
+                            <li class="page-item" :class="{ disabled: paginaProductos === totalPaginasProductos }">
+                                <a class="page-link" href="#" @@click.prevent="paginaProductos++">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @@click="cerrarModalProductos">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLES DE VENTA -->
+    <div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true"
+        ref="modalDetalles">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Productos de la Venta #{{ ventaSeleccionada?.id }}</h5>
+                    <button type="button" class="btn-close" @@click="cerrarModalDetalles" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" v-if="ventaSeleccionada">
+                    <p><strong>Cliente:</strong> {{ ventaSeleccionada.clienteNombre }}</p>
+                    <p><strong>Fecha:</strong> {{ formatFecha(ventaSeleccionada.fecha) }}</p>
+
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th class="text-center" style="width: 70px;">Cantidad</th>
+                                <th class="text-end" style="width: 100px;">Precio Unit.</th>
+                                <th class="text-end" style="width: 100px;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="detalle in ventaSeleccionada.detalles" :key="detalle.productoId">
+                                <td class="text-center">
+                                    <img :src="detalle.imagenUrl || '/images/default-product.png'" alt="Imagen"
+                                        style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem; border: 1px solid #ccc;">
+
+                                <td>{{ detalle.productoNombre }}</td>
+                                <td class="text-center">{{ detalle.cantidad }}</td>
+                                <td class="text-end">${{ detalle.precioUnitario.toFixed(2) }}</td>
+                                <td class="text-end">${{ (detalle.precioUnitario * detalle.cantidad).toFixed(2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @@click="cerrarModalDetalles">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAR ELIMINACIÓN -->
+    <div class="modal fade" id="modalEliminarVenta" tabindex="-1" aria-labelledby="modalEliminarVentaLabel"
+        aria-hidden="true" ref="modalEliminarVenta">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="modalEliminarVentaLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" @@click="cerrarModalEliminar" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar la venta <strong>#{{ ventaAEliminar?.id }}</strong>?</p>
+                    <p class="mb-0"><small>Esta acción no se puede deshacer.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @@click="cerrarModalEliminar">Cancelar</button>
+                    <button class="btn btn-danger" @@click="confirmarEliminarVenta" :disabled="cargandoEliminar">
+                        <span v-if="cargandoEliminar" class="spinner-border spinner-border-sm"></span>
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
-
-@section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-const { createApp } = Vue;
-
-createApp({
-    data() {
-        return {
-            ventas: [],
-            totalVentas: 0,
-            filtros: {
-                mes: '',      // formato 'YYYY-MM'
-                cliente: '',
-                producto: '',
-                page: 1,
-                pageSize: 5
-            },
-            productosDisponibles: [],
-            productoSeleccionadoId: null,
-            ventaEditando: null,
-            modalInstance: null,
-            debounceTimer: null,
-            cargandoGuardar: false,
-        };
-    },
-    computed: {
-        totalPaginas() {
-            return Math.ceil(this.totalVentas / this.filtros.pageSize);
-        },
-        totalEditando() {
-            if (!this.ventaEditando) return 0;
-            return this.ventaEditando.detalles.reduce((sum, d) => sum + d.precioUnitario * d.cantidad, 0);
-        }
-    },
-    methods: {
-        cargarVentas() {
-            const params = {
-                fecha: this.filtros.mes ? this.filtros.mes + '-01' : undefined,
-                cliente: this.filtros.cliente || undefined,
-                producto: this.filtros.producto || undefined,
-                page: this.filtros.page,
-                pageSize: this.filtros.pageSize
-            };
-            axios.get('/api/VentasApi/Filtradas', { params })
-                .then(res => {
-                    this.ventas = res.data.ventas;
-                    this.totalVentas = res.data.total;
-                })
-                .catch(() => {
-                    this.ventas = [];
-                    this.totalVentas = 0;
-                });
-        },
-        cambiarPagina(p) {
-            if (p < 1 || p > this.totalPaginas) return;
-            this.filtros.page = p;
-            this.cargarVentas();
-        },
-        debounceCargar() {
-            clearTimeout(this.debounceTimer);
-            this.debounceTimer = setTimeout(() => {
-                this.filtros.page = 1;
-                this.cargarVentas();
-            }, 400);
-        },
-        resetFiltros() {
-            this.filtros = { mes: '', cliente: '', producto: '', page: 1, pageSize: 5 };
-            this.cargarVentas();
-        },
-        abrirModalEditar(venta) {
-            // Hacer copia profunda para editar sin alterar la lista original
-            this.ventaEditando = JSON.parse(JSON.stringify(venta));
-            if (!this.modalInstance) {
-                this.modalInstance = new bootstrap.Modal(this.$refs.modalEditarVenta);
-            }
-            this.modalInstance.show();
-        },
-        cargarProductosDisponibles() {
-            axios.get('/api/ProductosApi/Todos')
-                .then(res => {
-                    this.productosDisponibles = res.data;
-                });
-        },
-
-        agregarProductoVenta() {
-            if (!this.productoSeleccionadoId) return;
-
-            const prod = this.productosDisponibles.find(p => p.id === parseInt(this.productoSeleccionadoId));
-            if (!prod) return;
-
-            // Verificamos si ya está agregado
-            const existe = this.ventaEditando.detalles.find(d => d.productoNombre === prod.nombre);
-            if (existe) {
-                alert('El producto ya está en la lista. Puedes modificar la cantidad.');
-                return;
-            }
-
-            this.ventaEditando.detalles.push({
-                productoNombre: prod.nombre,
-                cantidad: 1,
-                precioUnitario: prod.precio
-            });
-
-            this.productoSeleccionadoId = null;
-        },
-        cerrarModalEditar() {
-            if (this.modalInstance) this.modalInstance.hide();
-            this.ventaEditando = null;
-        },
-        guardarCambios() {
-            if (!this.ventaEditando) return;
-
-            this.cargandoGuardar = true;
-
-            // Validar cantidades >= 1
-            for (const d of this.ventaEditando.detalles) {
-                if (!d.cantidad || d.cantidad < 1) {
-                    alert("La cantidad debe ser al menos 1.");
-                    this.cargandoGuardar = false;
-                    return;
-                }
-            }
-
-            // Preparar DTO para PUT
-            const dto = {
-                id: this.ventaEditando.id,
-                detalles: this.ventaEditando.detalles.map(d => ({
-                    productoNombre: d.productoNombre,
-                    cantidad: d.cantidad,
-                    precioUnitario: d.precioUnitario
-                }))
-            };
-
-            axios.put(`/api/VentasApi/${this.ventaEditando.id}`, dto)
-                .then(res => {
-                    alert("Venta actualizada. Total nuevo: $" + res.data.total.toFixed(2));
-                    this.cargandoGuardar = false;
-                    this.cerrarModalEditar();
-                    this.cargarVentas();
-                })
-                .catch(err => {
-                    alert("Error al actualizar la venta");
-                    console.error(err);
-                    this.cargandoGuardar = false;
-                });
-        },
-        borrarVenta(id) {
-            if (!confirm("¿Seguro que deseas eliminar esta venta?")) return;
-
-            axios.delete(`/api/VentasApi/${id}`)
-                .then(() => {
-                    alert("Venta eliminada.");
-                    this.cargarVentas();
-                })
-                .catch(err => {
-                    alert("Error al eliminar la venta");
-                    console.error(err);
-                });
-        },
-        formatFecha(fechaStr) {
-            const date = new Date(fechaStr);
-            return date.toLocaleDateString();
-        }
-    },
-    mounted() {
-        this.cargarVentas();
-        this.cargarProductosDisponibles();
+<style>
+    /* Quitar flechas de los inputs type="number" en Chrome, Safari, Edge, Opera */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
-}).mount('#app');
-</script>
+
+    /* Quitar flechas en Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    .card-venta {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-venta .card-body {
+        flex-grow: 1;
+    }
+
+    .tabla-productos img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+    }
+</style>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const { createApp, ref, reactive, computed, onMounted } = Vue;
+
+        // Interceptores
+        axios.interceptors.request.use(config => {
+            const token = sessionStorage.getItem('jwt');
+            if (token) config.headers.Authorization = `Bearer ${token}`;
+            return config;
+        }, error => Promise.reject(error));
+
+        axios.interceptors.response.use(response => response, error => {
+            if (error.response?.status === 401) {
+                alert("Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.");
+                sessionStorage.removeItem('jwt');
+                window.location.href = "/Identity/Account/Login";
+            }
+            return Promise.reject(error);
+        });
+
+        function getQueryParams() {
+            const params = {};
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                params[key] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        createApp({
+            setup() {
+                const ventas = ref([]);
+                const totalVentas = ref(0);
+                const filtros = reactive({ dia: '', fechaDesde: '', fechaHasta: '', cliente: '', producto: '', page: 1, pageSize: 6 });
+
+                // Leer parámetros de la URL
+                const query = getQueryParams();
+                if (query.dia) {
+                    filtros.dia = query.dia;
+                } else if (query.semana) {
+                    filtros.semana = query.semana;
+                } else if (query.mes) {
+                    filtros.mes = query.mes;
+                }
+
+                const categorias = ref([]);
+                const categoriaSeleccionada = ref('');
+                const productosDisponibles = ref([]);
+                const busquedaProducto = ref('');
+                const paginaProductos = ref(1);
+                const pageSizeProductos = ref(9);
+
+                const ventaEditando = ref(null);
+                const modalEditarInstance = ref(null);
+                const modalProductosInstance = ref(null);
+                const modalDetallesInstance = ref(null);
+                const modalEliminarVentaInstance = ref(null);
+
+                const ventaSeleccionada = ref(null);
+                const ventaAEliminar = ref(null);
+                const cargandoGuardar = ref(false);
+                const cargandoEliminar = ref(false);
+                const exitoMensaje = ref('');
+                const errorMensaje = ref('');
+                let debounceTimer = null;
+
+                const totalPaginas = computed(() =>
+                    Math.ceil(totalVentas.value / filtros.pageSize) || 1
+                );
+
+                const totalEditando = computed(() => {
+                    return ventaEditando.value?.detalles.reduce((sum, d) => sum + d.precioUnitario * d.cantidad, 0) || 0;
+                });
+
+                const productosFiltrados = computed(() => {
+                    let filtrados = productosDisponibles.value;
+                    const term = busquedaProducto.value.trim().toLowerCase();
+
+                    if (categoriaSeleccionada.value)
+                        filtrados = filtrados.filter(p => p.categoriaId == categoriaSeleccionada.value);
+
+                    if (term)
+                        filtrados = filtrados.filter(p => p.nombre.toLowerCase().includes(term));
+
+                    return filtrados;
+                });
+
+                const totalPaginasProductos = computed(() =>
+                    Math.ceil(productosFiltrados.value.length / pageSizeProductos.value) || 1
+                );
+
+                const productosFiltradosPaginados = computed(() => {
+                    const start = (paginaProductos.value - 1) * pageSizeProductos.value;
+                    return productosFiltrados.value.slice(start, start + pageSizeProductos.value);
+                });
+
+                function mostrarExito(msg) {
+                    exitoMensaje.value = msg;
+                    setTimeout(() => exitoMensaje.value = '', 4000);
+                }
+
+                function mostrarError(msg) {
+                    errorMensaje.value = msg;
+                    setTimeout(() => errorMensaje.value = '', 5000);
+                }
+
+                async function cargarVentas() {
+                    try {
+                        let params = {
+                            cliente: filtros.cliente || undefined,
+                            producto: filtros.producto || undefined,
+                            page: filtros.page,
+                            pageSize: filtros.pageSize
+                        };
+
+                        if (filtros.dia) {
+                            params.dia = filtros.dia;
+                        } else {
+                            if (filtros.fechaDesde) params.fechaDesde = filtros.fechaDesde;
+                            if (filtros.fechaHasta) params.fechaHasta = filtros.fechaHasta;
+                        }
+
+                        const res = await axios.get('/api/VentasApi/Filtradas', { params });
+                        ventas.value = res.data.ventas;
+                        totalVentas.value = res.data.total;
+                    } catch (error) {
+                        console.error(error);
+                        mostrarError("❌ No se pudieron cargar las ventas.");
+                        ventas.value = [];
+                        totalVentas.value = 0;
+                    }
+                }
+
+
+                function cambiarPagina(p) {
+                    if (p >= 1 && p <= totalPaginas.value) {
+                        filtros.page = p;
+                        cargarVentas();
+                    }
+                }
+
+                function debounceCargar() {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        filtros.page = 1;
+                        cargarVentas();
+                    }, 400);
+                }
+
+                function resetFiltros() {
+                    Object.assign(filtros, { dia: '', fechaDesde: '', fechaHasta: '', cliente: '', producto: '', page: 1, pageSize: 6 });
+                    cargarVentas();
+                }
+
+
+                function abrirModalDetalles(venta) {
+                    ventaSeleccionada.value = venta;
+                    if (!modalDetallesInstance.value)
+                        modalDetallesInstance.value = new bootstrap.Modal(document.querySelector('#modalDetalles'));
+                    modalDetallesInstance.value.show();
+                }
+
+                function cerrarModalDetalles() {
+                    modalDetallesInstance.value?.hide();
+                    ventaSeleccionada.value = null;
+                }
+
+                function abrirModalEditar(venta) {
+                    ventaEditando.value = JSON.parse(JSON.stringify(venta));
+                    ventaEditando.value.detalles.forEach(d => {
+                        if (!d.productoId) {
+                            const prod = productosDisponibles.value.find(p => p.nombre === d.productoNombre);
+                            d.productoId = prod?.id || null;
+                        }
+                    });
+
+                    if (!modalEditarInstance.value)
+                        modalEditarInstance.value = new bootstrap.Modal(document.querySelector('#modalEditarVenta'));
+                    modalEditarInstance.value.show();
+                }
+
+                function cerrarModalEditar() {
+                    modalEditarInstance.value?.hide();
+                    ventaEditando.value = null;
+                }
+
+                async function cargarProductosDisponibles() {
+                    try {
+                        const [prodRes, catRes] = await Promise.all([
+                            axios.get('/api/ProductosApi/Filtrados', { params: { page: 1, pageSize: 1000 } }),
+                            axios.get('/api/ProductosApi/Categorias')
+                        ]);
+                        productosDisponibles.value = prodRes.data.productos;
+                        categorias.value = catRes.data;
+                    } catch (error) {
+                        console.error(error);
+                        mostrarError("❌ No se pudieron cargar los productos.");
+                    }
+                }
+
+                function abrirModalProductos() {
+                    if (!modalProductosInstance.value)
+                        modalProductosInstance.value = new bootstrap.Modal(document.querySelector('#modalProductos'));
+                    modalProductosInstance.value.show();
+                }
+
+                function cerrarModalProductos() {
+                    modalProductosInstance.value?.hide();
+                    busquedaProducto.value = '';
+                    paginaProductos.value = 1;
+                    categoriaSeleccionada.value = '';
+                }
+
+                function agregarProductoDesdeModal(prod) {
+                    if (!ventaEditando.value) return;
+
+                    const existente = ventaEditando.value.detalles.find(d => d.productoId === prod.id);
+                    if (existente) {
+                        existente.cantidad++;
+                    } else {
+                        ventaEditando.value.detalles.push({
+                            productoId: prod.id,
+                            productoNombre: prod.nombre,
+                            cantidad: 1,
+                            precioUnitario: prod.precio
+                        });
+                    }
+                    cerrarModalProductos();
+                }
+
+                function quitarProducto(idx) {
+                    ventaEditando.value.detalles.splice(idx, 1);
+                }
+
+                async function guardarCambios() {
+                    if (!ventaEditando.value) return;
+
+                    const errores = ventaEditando.value.detalles.filter(d => !d.cantidad || d.cantidad < 1);
+                    if (errores.length > 0) {
+                        mostrarError("⚠️ La cantidad mínima para cada producto debe ser 1.");
+                        return;
+                    }
+
+                    cargandoGuardar.value = true;
+                    try {
+                        const dto = {
+                            detalles: ventaEditando.value.detalles.map(d => ({
+                                productoId: d.productoId,
+                                cantidad: d.cantidad,
+                                precioUnitario: d.precioUnitario
+                            }))
+                        };
+                        const res = await axios.put(`/api/VentasApi/${ventaEditando.value.id}`, dto);
+                        mostrarExito(`✅ Venta actualizada. Total nuevo: $${res.data.total.toFixed(2)}`);
+                        cerrarModalEditar();
+                        cargarVentas();
+                    } catch (error) {
+                        console.error(error);
+                        mostrarError("❌ Error al actualizar la venta.");
+                    } finally {
+                        cargandoGuardar.value = false;
+                    }
+                }
+
+                async function borrarVenta(ventaId) {
+                    const venta = ventas.value.find(v => v.id === ventaId);
+                    ventaAEliminar.value = venta ? { ...venta } : { id: ventaId };
+
+                    if (!modalEliminarVentaInstance.value)
+                        modalEliminarVentaInstance.value = new bootstrap.Modal(document.querySelector('#modalEliminarVenta'));
+                    modalEliminarVentaInstance.value.show();
+                }
+
+                function cerrarModalEliminar() {
+                    modalEliminarVentaInstance.value?.hide();
+                    ventaAEliminar.value = null;
+                }
+
+                async function confirmarEliminarVenta() {
+                    if (!ventaAEliminar.value) return;
+                    cargandoEliminar.value = true;
+
+                    try {
+                        await axios.delete(`/api/VentasApi/${ventaAEliminar.value.id}`);
+                        mostrarExito("✅ Venta eliminada correctamente.");
+                        cerrarModalEliminar();
+                        cargarVentas();
+                    } catch (error) {
+                        console.error(error);
+                        mostrarError("❌ Error al eliminar la venta.");
+                    } finally {
+                        cargandoEliminar.value = false;
+                    }
+                }
+
+                function formatFecha(fechaStr) {
+                    const date = new Date(fechaStr);
+                    return date.toLocaleDateString();
+                }
+
+                onMounted(() => {
+                    cargarProductosDisponibles();
+                    cargarVentas();
+                });
+
+                return {
+                    ventas,
+                    totalVentas,
+                    filtros,
+                    categorias,
+                    categoriaSeleccionada,
+                    productosDisponibles,
+                    busquedaProducto,
+                    paginaProductos,
+                    pageSizeProductos,
+                    ventaEditando,
+                    ventaSeleccionada,
+                    modalEditarInstance,
+                    modalProductosInstance,
+                    modalDetallesInstance,
+                    modalEliminarVentaInstance,
+                    ventaAEliminar,
+                    cargandoGuardar,
+                    cargandoEliminar,
+                    exitoMensaje,
+                    errorMensaje,
+
+                    totalPaginas,
+                    totalEditando,
+                    productosFiltrados,
+                    totalPaginasProductos,
+                    productosFiltradosPaginados,
+
+                    mostrarExito,
+                    mostrarError,
+                    cargarVentas,
+                    cambiarPagina,
+                    debounceCargar,
+                    resetFiltros,
+                    abrirModalDetalles,
+                    cerrarModalDetalles,
+                    abrirModalEditar,
+                    cerrarModalEditar,
+                    cargarProductosDisponibles,
+                    abrirModalProductos,
+                    cerrarModalProductos,
+                    agregarProductoDesdeModal,
+                    quitarProducto,
+                    guardarCambios,
+                    borrarVenta,
+                    cerrarModalEliminar,
+                    confirmarEliminarVenta,
+                    formatFecha
+                };
+            }
+        }).mount('#app');
+    </script>
 }

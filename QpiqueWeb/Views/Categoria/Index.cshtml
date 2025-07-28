@@ -1,0 +1,324 @@
+@{
+    ViewData["Title"] = "Administrar Categorías";
+}
+
+<div id="app" class="container-fluid py-4">
+    <!-- TOASTS DE NOTIFICACIONES -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div class="toast align-items-center text-bg-danger border-0 show" role="alert" v-if="errorMensaje">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ errorMensaje }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" @@click="errorMensaje = ''"></button>
+            </div>
+        </div>
+        <div class="toast align-items-center text-bg-success border-0 show" role="alert" v-if="exitoMensaje">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ exitoMensaje }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" @@click="exitoMensaje = ''"></button>
+            </div>
+        </div>
+    </div>
+    <div class="contenido-glass">
+        <!-- Encabezado -->
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+            <h2 class="mb-4"><i class="bi bi-tags me-2"></i> Categorías</h2>
+            <button class="btn btn-outline-success d-flex align-items-center gap-2" @@click="abrirModalCrear">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </button>
+        </div>
+
+        <!-- Lista de categorías -->
+        <div class="row">
+            <div v-for="categoria in categorias" :key="categoria.id" class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-0 rounded-4">
+                    <img v-if="categoria.imagenUrl" :src="categoria.imagenUrl" class="card-img-top rounded-top-4"
+                        alt="Imagen categoría" style="height:180px; object-fit:cover;" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-truncate">{{ categoria.nombre }}</h5>
+                        <div class="mt-auto d-flex justify-content-between">
+                            <button class="btn btn-outline-primary btn-sm" @@click="abrirModalEditar(categoria)">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" @@click="abrirModalEliminar(categoria)">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear/Editar -->
+    <div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true" ref="modalCategoriaRef">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <form v-on:submit.prevent="guardarCategoria" enctype="multipart/form-data">
+                    <div class="modal-header border-bottom-0 bg-light rounded-top-4">
+                        <h5 class="modal-title fw-semibold">
+                            {{ esEdicion ? '✏️ Editar Categoría' : '➕ Nueva Categoría' }}
+                        </h5>
+                        <button type="button" class="btn-close" @@click="cerrarModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" id="nombre" v-model="form.nombre" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="imagen" class="form-label">Imagen</label>
+                            <input type="file" id="imagen" @@change="cambiarImagen" accept="image/*"
+                                class="form-control" />
+                        </div>
+                        <div v-if="previewImagen" class="mb-3 text-center">
+                            <label class="form-label d-block">Previsualización</label>
+                            <img :src="previewImagen" alt="Previsualización" class="img-fluid rounded shadow-sm border"
+                                style="max-height: 200px;" />
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0">
+                        <button type="button" class="btn btn-secondary" @@click="cerrarModal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            {{ esEdicion ? '💾 Guardar cambios' : '✅ Crear' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminación -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true" ref="modalEliminarRef">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" @@click="cerrarModalEliminar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Seguro que desea eliminar la categoría <strong>{{ categoriaEliminar.nombre }}</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @@click="cerrarModalEliminar">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @@click="confirmarEliminarCategoria">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        // Interceptor para añadir token a todas las peticiones
+        axios.interceptors.request.use(config => {
+            const token = sessionStorage.getItem('jwt');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
+        }, error => Promise.reject(error));
+
+        // Interceptor para manejar errores globales
+        axios.interceptors.response.use(response => response, error => {
+            if (error.response && error.response.status === 401) {
+                alert('Sesión expirada o no autorizada. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('jwt');
+                window.location.href = "/Identity/Account/Login"; // Ajusta según tu ruta de login
+            }
+            return Promise.reject(error);
+        });
+
+        const { createApp, ref, reactive, onMounted } = Vue;
+        
+        createApp({
+            setup() {
+                const categorias = ref([]);
+                const esEdicion = ref(false);
+                const form = reactive({
+                    id: 0,
+                    nombre: ''
+                });
+                const imagenArchivo = ref(null);
+                const previewImagen = ref(null);
+
+                // Modal refs y objetos
+                const modalCategoriaRef = ref(null);
+                const modalEliminarRef = ref(null);
+                let modalCategoria, modalEliminar;
+
+                // Para guardar categoría a eliminar
+                const categoriaEliminar = reactive({
+                    id: 0,
+                    nombre: ''
+                });
+
+                const errorMensaje = ref('');
+                const exitoMensaje = ref('');
+
+                // Cargar categorías desde API usando Axios (con interceptor)
+                async function cargarCategorias() {
+                    try {
+                        const res = await axios.get('/api/CategoriasApi');
+                        categorias.value = res.data;
+                    } catch (err) {
+                        mostrarError('Error al cargar categorías: ' + (err.response?.data || err.message));
+                    }
+                };
+
+                function mostrarError(mensaje) {
+                    errorMensaje.value = mensaje;
+                    setTimeout(() => errorMensaje.value = '', 5000);
+                }
+
+                function mostrarExito(mensaje) {
+                    exitoMensaje.value = mensaje;
+                    setTimeout(() => exitoMensaje.value = '', 4000);
+                }
+
+                // Modal crear/editar
+                function abrirModalCrear() {
+                    esEdicion.value = false;
+                    form.id = 0;
+                    form.nombre = '';
+                    imagenArchivo.value = null;
+                    previewImagen.value = null;
+                    modalCategoria.show();
+                }
+
+                function abrirModalEditar(categoria) {
+                    esEdicion.value = true;
+                    form.id = categoria.id;
+                    form.nombre = categoria.nombre;
+                    imagenArchivo.value = null;
+                    previewImagen.value = categoria.imagenUrl ?? null;
+                    modalCategoria.show();
+                }
+
+                function cerrarModal() {
+                    modalCategoria.hide();
+
+                    form.id = 0;
+                    form.nombre = '';
+                    imagenArchivo.value = null;
+
+                    if (previewImagen.value && previewImagen.value.startsWith('blob:')) {
+                        URL.revokeObjectURL(previewImagen.value);
+                    }
+                    previewImagen.value = null;
+
+                    const inputFile = modalCategoriaRef.value.querySelector('#imagen');
+                    if (inputFile) inputFile.value = '';
+                }
+
+                function cambiarImagen(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (previewImagen.value && previewImagen.value.startsWith('blob:')) {
+                            URL.revokeObjectURL(previewImagen.value);
+                        }
+                        imagenArchivo.value = file;
+                        previewImagen.value = URL.createObjectURL(file);
+                    } else {
+                        if (previewImagen.value && previewImagen.value.startsWith('blob:')) {
+                            URL.revokeObjectURL(previewImagen.value);
+                        }
+                        imagenArchivo.value = null;
+                        previewImagen.value = null;
+                    }
+                }
+
+                async function guardarCategoria() {
+                    try {
+                        const data = new FormData();
+                        data.append('Id', form.id.toString());
+                        data.append('Nombre', form.nombre);
+                        if (imagenArchivo.value) {
+                            data.append('imagen', imagenArchivo.value);
+                        }
+
+                        let res;
+                        if (form.id === 0) {
+                            res = await axios.post('/api/CategoriasApi', data);
+                            exitoMensaje.value = '✅ Categoría creada exitosamente.';
+                        } else {
+                            res = await axios.put(`/api/CategoriasApi/${form.id}`, data);
+                            exitoMensaje.value = '✅ Categoría actualizada correctamente.';
+                        }
+
+                        if (res.status !== 200 && res.status !== 201) {
+                            throw new Error('Error al guardar categoría');
+                        }
+
+                        await cargarCategorias();
+                        cerrarModal();
+                    } catch (err) {
+                        errorMensaje.value = '❌ Error al guardar categoría: ' + (err.response?.data || err.message);
+                    }
+                }
+
+                // Abrir modal eliminar y asignar categoría
+                function abrirModalEliminar(categoria) {
+                    categoriaEliminar.id = categoria.id;
+                    categoriaEliminar.nombre = categoria.nombre;
+                    modalEliminar.show();
+                }
+
+                function cerrarModalEliminar() {
+                    modalEliminar.hide();
+                    categoriaEliminar.id = 0;
+                    categoriaEliminar.nombre = '';
+                }
+
+                // Confirmar eliminación
+                async function confirmarEliminarCategoria() {
+                    try {
+                        const res = await axios.delete(`/api/CategoriasApi/${categoriaEliminar.id}`);
+                        if (res.status !== 200 && res.status !== 204) {
+                            throw new Error('Error al eliminar categoría');
+                        }
+                        await cargarCategorias();
+                        cerrarModalEliminar();
+                        exitoMensaje.value = '🗑️ Categoría eliminada exitosamente.';
+                    } catch (err) {
+                        errorMensaje.value = err.response?.data || '❌ Error al eliminar categoría.';
+                    }
+                }
+
+                onMounted(() => {
+                    modalCategoria = new bootstrap.Modal(modalCategoriaRef.value);
+                    modalEliminar = new bootstrap.Modal(modalEliminarRef.value);
+                    cargarCategorias();
+                });
+
+                return {
+                    categorias,
+                    esEdicion,
+                    form,
+                    imagenArchivo,
+                    previewImagen,
+                    modalCategoriaRef,
+                    modalEliminarRef,
+                    categoriaEliminar,
+                    abrirModalCrear,
+                    abrirModalEditar,
+                    cerrarModal,
+                    cambiarImagen,
+                    guardarCategoria,
+                    abrirModalEliminar,
+                    cerrarModalEliminar,
+                    confirmarEliminarCategoria,
+                    errorMensaje,
+                    exitoMensaje
+                };
+            }
+        }).mount('#app');
+    </script>
+}
+

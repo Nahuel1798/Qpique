@@ -1,10 +1,13 @@
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QpiqueWeb.Data;
 using QpiqueWeb.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace QpiqueWeb.Controllers.Api
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductosApiController : ControllerBase
@@ -16,25 +19,8 @@ namespace QpiqueWeb.Controllers.Api
             _context = context;
         }
 
-        [HttpGet("Todos")]
-        public async Task<ActionResult<IEnumerable<ProductoDto>>> GetTodos()
-        {
-            var productos = await _context.Productos
-                .Include(p => p.Categoria)
-                .Select(p => new ProductoDto
-                {
-                    Id = p.Id,
-                    Nombre = p.Nombre,
-                    Descripcion = p.Descripcion,
-                    Precio = p.Precio,
-                    Stock = p.Stock,
-                    CategoriaNombre = p.Categoria.Nombre
-                })
-                .ToListAsync();
-
-            return Ok(productos);
-        }
-
+        // GET: api/ProductosApi/Filtrados?categoriaId=1&nombre=producto&page=1&pageSize=6
+        [AllowAnonymous]
         [HttpGet("Filtrados")]
         public async Task<IActionResult> GetFiltrados(
             [FromQuery] int? categoriaId,
@@ -42,7 +28,10 @@ namespace QpiqueWeb.Controllers.Api
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 6)
         {
-            var query = _context.Productos.Include(p => p.Categoria).AsQueryable();
+            var query = _context.Productos
+                .Include(p => p.Categoria)
+                .Where(p => !p.Estado) // 👈 Filtro borrado lógico
+                .AsQueryable();
 
             if (categoriaId.HasValue)
                 query = query.Where(p => p.CategoriaId == categoriaId.Value);
@@ -64,16 +53,16 @@ namespace QpiqueWeb.Controllers.Api
                     ImagenUrl = string.IsNullOrEmpty(p.ImagenUrl) ? "/img/sinimagen.jpg" : p.ImagenUrl,
                     Precio = p.Precio,
                     Stock = p.Stock,
-                    CategoriaNombre = p.Categoria != null ? p.Categoria.Nombre : ""
+                    CategoriaNombre = p.Categoria != null ? p.Categoria.Nombre : "",
+                    CategoriaId = p.CategoriaId
                 })
                 .ToListAsync();
 
             return Ok(new { total, productos });
         }
 
-
-
         // GET: api/ProductosApi/Categorias
+        [AllowAnonymous]
         [HttpGet("Categorias")]
         public async Task<IActionResult> GetCategorias()
         {
@@ -81,6 +70,7 @@ namespace QpiqueWeb.Controllers.Api
             return Ok(categorias);
         }
 
+        // GET: api/ProductosApi/Ids?ids=1,2,3
         [HttpGet("Ids")]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductosPorIds([FromQuery] string ids)
         {
@@ -90,31 +80,17 @@ namespace QpiqueWeb.Controllers.Api
             var idList = ids.Split(',').Select(int.Parse).ToList();
 
             var productos = await _context.Productos
-                .Where(p => idList.Contains(p.Id))
+                .Where(p => idList.Contains(p.Id) && !p.Estado) // 👈 Filtro borrado lógico
                 .ToListAsync();
 
             return Ok(productos);
-        }
-
-
-        // POST: api/ProductosApi
-        [HttpPost]
-        public async Task<IActionResult> CrearProducto([FromBody] Producto producto)
-        {
-            if (producto == null)
-                return BadRequest();
-
-            _context.Productos.Add(producto);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetProductoPorId), new { id = producto.Id }, producto);
         }
 
         // GET: api/ProductosApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProductoPorId(int id)
         {
-            var producto = await _context.Productos.FindAsync(id);
+            var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id && !p.Estado); // 👈 Filtro lógico
 
             if (producto == null)
                 return NotFound();
@@ -124,23 +100,49 @@ namespace QpiqueWeb.Controllers.Api
 
         // PUT: api/ProductosApi/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditarProducto(int id, [FromBody] Producto producto)
+        [Authorize(Roles = "Administrador, Empleado")]
+        public async Task<IActionResult> EditarProducto(int id, [FromForm] ProductoDto productoDto, IFormFile? nuevaImagen)
         {
-            if (id != producto.Id)
+            if (id != productoDto.Id)
                 return BadRequest("El ID del producto no coincide con el de la URL.");
 
-            var productoExistente = await _context.Productos.FindAsync(id);
-
+            var productoExistente = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id && !p.Estado);
             if (productoExistente == null)
                 return NotFound();
 
-            // Actualizar campos (puedes ajustar según qué campos quieras permitir editar)
-            productoExistente.Nombre = producto.Nombre;
-            productoExistente.Descripcion = producto.Descripcion;
-            productoExistente.Precio = producto.Precio;
-            productoExistente.Stock = producto.Stock;
-            productoExistente.CategoriaId = producto.CategoriaId;
-            productoExistente.ImagenUrl = producto.ImagenUrl;
+            // Si hay una nueva imagen, borrar la anterior y guardar la nueva
+            if (nuevaImagen != null && nuevaImagen.Length > 0)
+            {
+                // Borrar imagen anterior si existe y no es la por defecto
+                if (!string.IsNullOrEmpty(productoExistente.ImagenUrl) && productoExistente.ImagenUrl != "/img/sinimagen.jpg")
+                {
+                    var rutaFisica = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", productoExistente.ImagenUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(rutaFisica))
+                        System.IO.File.Delete(rutaFisica);
+                }
+
+                var extension = Path.GetExtension(nuevaImagen.FileName);
+                var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+                var rutaCarpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/productos");
+
+                if (!Directory.Exists(rutaCarpeta))
+                    Directory.CreateDirectory(rutaCarpeta);
+
+                var rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await nuevaImagen.CopyToAsync(stream);
+                }
+
+                productoExistente.ImagenUrl = $"/img/productos/{nombreArchivo}";
+            }
+
+            // Actualizar otros campos
+            productoExistente.Nombre = productoDto.Nombre;
+            productoExistente.Descripcion = productoDto.Descripcion;
+            productoExistente.Precio = productoDto.Precio;
+            productoExistente.Stock = productoDto.Stock;
+            productoExistente.CategoriaId = productoDto.CategoriaId;
 
             try
             {
@@ -157,23 +159,42 @@ namespace QpiqueWeb.Controllers.Api
             return NoContent();
         }
 
+
         // DELETE: api/ProductosApi/5
+        [Authorize(Roles = "Administrador")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> BorrarProducto(int id)
         {
             var producto = await _context.Productos.FindAsync(id);
-            if (producto == null)
+            if (producto == null || producto.Estado) // 👈 Ya eliminado
                 return NotFound();
 
-            _context.Productos.Remove(producto);
+            producto.Estado = true; // 👈 Borrado lógico
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+        // Verifica si un producto existe
         private bool ProductoExiste(int id)
         {
-            return _context.Productos.Any(e => e.Id == id);
+            return _context.Productos.Any(e => e.Id == id && !e.Estado); // 👈 Filtro lógico
         }
+
+
+        // DTO para Producto
+        public class ProductoDto
+        {
+            public int Id { get; set; }
+            public string Nombre { get; set; } = "";
+            public string? Descripcion { get; set; }
+            public string ImagenUrl { get; set; } = "/img/sinimagen.jpg";
+            public decimal Precio { get; set; }
+            public int Stock { get; set; }
+            public bool Estado { get; set; } = false;
+            public string CategoriaNombre { get; set; } = "";
+            public int CategoriaId { get; set; }
+        }
+
     }
 }

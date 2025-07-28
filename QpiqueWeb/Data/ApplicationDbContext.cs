@@ -56,6 +56,12 @@ namespace QpiqueWeb.Data
                 .WithOne(d => d.Producto)
                 .HasForeignKey(d => d.ProductoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Query filter for Producto
+            builder.Entity<Producto>().HasQueryFilter(p => !p.Estado);
+            
+            // Query filter for Categoria
+            builder.Entity<Categoria>().HasQueryFilter(c => !c.Estado);
         }
     }
 }
