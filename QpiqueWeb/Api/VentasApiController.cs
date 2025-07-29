@@ -12,6 +12,7 @@ namespace QpiqueWeb.Controllers.Api
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrador, Empleado")]
     public class VentasApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context; //Usa Entity para conectarse a la base de datos

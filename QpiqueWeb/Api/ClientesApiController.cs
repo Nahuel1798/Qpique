@@ -11,6 +11,7 @@ namespace QpiqueWeb.Controllers.Api
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrador, Empleado")]
     public class ClientesApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context; //Usa Entity para conectarse a la base de datos
@@ -29,7 +30,7 @@ namespace QpiqueWeb.Controllers.Api
                 //Ordenar los datos
                 .OrderBy(c => c.Apellido)
                 .ThenBy(c => c.Nombre)
-                .Select(c => new ClienteDto 
+                .Select(c => new ClienteDto
                 {
                     Id = c.Id,
                     Nombre = c.Nombre,
