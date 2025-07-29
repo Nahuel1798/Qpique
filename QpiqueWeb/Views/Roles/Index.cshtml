@@ -211,6 +211,7 @@
           if (nuevaPagina >= 1 && nuevaPagina <= totalPages.value) {
             page.value = nuevaPagina;
           }
+          window.scrollTo({ top: 0, behavior: 'smooth' }); // 👈 Desplazamiento suave al inicio
         }
 
         function abrirEditar(usuario) {

@@ -513,6 +513,7 @@
                         filtros.page = p;
                         cargarVentas();
                     }
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // 👈 Desplazamiento suave al inicio
                 }
 
                 function debounceCargar() {
