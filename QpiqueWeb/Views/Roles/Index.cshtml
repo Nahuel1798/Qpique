@@ -5,7 +5,7 @@
 <div id="app" class="container-fluid py-4">
   <div class="contenido-glass">
     <h2 class="mb-4"><i class="bi bi-shield-lock me-2"></i> Administrar Usuarios y Roles</h2>
-    
+
     <!-- Buscador -->
     <div class="mb-3">
       <input v-model="searchString" @@input="resetPageAndFetch" class="form-control"
@@ -191,7 +191,7 @@
             params.append('page', page.value);
             params.append('pageSize', pageSize.value);
 
-            const url = `/api/RolesApi/Usuarios${this.searchString ? `?searchString=${encodeURIComponent(this.searchString)}` : ''}`;
+            const url = `/api/RolesApi/Usuarios?${params.toString()}`;
             const res = await fetch(url);
             const data = await res.json();
 
@@ -206,6 +206,7 @@
             console.error(error);
           }
         }
+
 
         function cambiarPagina(nuevaPagina) {
           if (nuevaPagina >= 1 && nuevaPagina <= totalPages.value) {

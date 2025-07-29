@@ -9,6 +9,18 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\Carrousel1.jpg",
+      "PackagePath": "staticwebassets\\img\\Carrousel1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\Carrousel2.jpg",
+      "PackagePath": "staticwebassets\\img\\Carrousel2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\Carrousel3.jpg",
+      "PackagePath": "staticwebassets\\img\\Carrousel3.jpg"
+    },
+    {
       "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\FondoNuevo.jpeg",
       "PackagePath": "staticwebassets\\img\\FondoNuevo.jpeg"
     },
@@ -85,6 +97,14 @@
       "PackagePath": "staticwebassets\\img\\productos\\1aa12ad9-a1cb-4cf1-b11a-3a8df8032616.jpg"
     },
     {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\2981361c-5357-4f85-b87e-9e2bcaa386d8.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\2981361c-5357-4f85-b87e-9e2bcaa386d8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\302559ea-4eaa-4821-8f21-550d56c19e50.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\302559ea-4eaa-4821-8f21-550d56c19e50.jpg"
+    },
+    {
       "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\40f9244e-a404-49d8-80a8-cf68ffdddb78.jpg",
       "PackagePath": "staticwebassets\\img\\productos\\40f9244e-a404-49d8-80a8-cf68ffdddb78.jpg"
     },
@@ -109,6 +129,10 @@
       "PackagePath": "staticwebassets\\img\\productos\\513f0dae-02cf-45e3-8304-47ffd8ad2fa8.jpg"
     },
     {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\5d07fc4c-ee3c-4a7e-a446-4f92fd155aff.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\5d07fc4c-ee3c-4a7e-a446-4f92fd155aff.jpg"
+    },
+    {
       "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\6e17959f-f1ec-4d5c-974e-571120ac7269.jpg",
       "PackagePath": "staticwebassets\\img\\productos\\6e17959f-f1ec-4d5c-974e-571120ac7269.jpg"
     },
@@ -129,8 +153,24 @@
       "PackagePath": "staticwebassets\\img\\productos\\a12c90d1-222f-42ff-b073-b2290c4a0c19.jpg"
     },
     {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\aa135769-be71-461e-bfc8-ffee003d8f16.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\aa135769-be71-461e-bfc8-ffee003d8f16.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\aa96226b-ad94-476c-b478-fc7d09965736.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\aa96226b-ad94-476c-b478-fc7d09965736.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\c4e67db4-fb14-40e4-86e6-c5a545fd8c08.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\c4e67db4-fb14-40e4-86e6-c5a545fd8c08.jpg"
+    },
+    {
       "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\ccd537aa-8c44-4ace-b7a7-f659fadd86a0.jpg",
       "PackagePath": "staticwebassets\\img\\productos\\ccd537aa-8c44-4ace-b7a7-f659fadd86a0.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\d2208ebe-a628-4548-a1cd-6318000fa470.jpg",
+      "PackagePath": "staticwebassets\\img\\productos\\d2208ebe-a628-4548-a1cd-6318000fa470.jpg"
     },
     {
       "Id": "C:\\Users\\Nahuel\\Desktop\\Programacion\\.Net\\Qpique\\qpiqueweb\\wwwroot\\img\\productos\\e65f9a5e-d5b7-43b1-88a3-62a223a9ed45.jpg",

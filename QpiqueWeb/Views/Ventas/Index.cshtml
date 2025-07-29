@@ -70,7 +70,7 @@
                         </div>
                         <div class="text-end d-flex flex-column align-items-end gap-2">
                             <h5 class="text-primary mb-2">${{ venta.total.toFixed(2) }}</h5>
-                            <div class="btn-group" role="group" aria-label="Acciones venta">
+                            <div class="d-flex flex-wrap gap-2 mt-2">
                                 <button class="btn btn-sm btn-outline-primary" @@click="abrirModalEditar(venta)"
                                     aria-label="Editar venta">
                                     <i class="bi bi-pencil"></i> Editar
@@ -80,6 +80,7 @@
                                     <i class="bi bi-trash"></i> Eliminar
                                 </button>
                             </div>
+
                         </div>
                     </div>
                     <div class="card-body p-3">
@@ -342,8 +343,8 @@
             </div>
         </div>
     </div>
-
 </div>
+
 <style>
     /* Quitar flechas de los inputs type="number" en Chrome, Safari, Edge, Opera */
     input[type="number"]::-webkit-inner-spin-button,
@@ -367,6 +368,7 @@
         flex-grow: 1;
     }
 </style>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -468,7 +470,7 @@
                     const start = (paginaProductos.value - 1) * pageSizeProductos.value;
                     return productosFiltrados.value.slice(start, start + pageSizeProductos.value);
                 });
-                
+
 
                 function mostrarExito(msg) {
                     exitoMensaje.value = msg;
@@ -599,7 +601,8 @@
                             productoId: prod.id,
                             productoNombre: prod.nombre,
                             cantidad: 1,
-                            precioUnitario: prod.precio
+                            precioUnitario: prod.precio,
+                            imagenUrl: prod.imagenUrl
                         });
                     }
                     cerrarModalProductos();
@@ -684,7 +687,7 @@
                     };
                     return f.toLocaleDateString('es-AR', opcionesFecha) + ' ' + f.toLocaleTimeString('es-AR', opcionesHora);
                 }
-                
+
 
                 onMounted(() => {
                     cargarProductosDisponibles();

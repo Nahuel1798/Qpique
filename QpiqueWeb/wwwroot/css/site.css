@@ -640,3 +640,45 @@ table tfoot td {
 }
 
 
+.form-label {
+        color: #003f88;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .btn-outline-info {
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-success {
+        background-color: #00c851;
+        border-color: #00c851;
+    }
+
+    .btn-success:hover {
+        background-color: #007e33;
+        border-color: #007e33;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #dee2e6;
+    }
+
+    .img-thumbnail {
+        border: 2px solid #007bff;
+        padding: 4px;
+    }
+
+    .bi {
+        vertical-align: middle;
+    }

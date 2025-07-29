@@ -320,6 +320,74 @@
         color: #0d6efd;
     }
 
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15);
+    }
+
+    .card-img-top {
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .card-body {
+        background-color: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        border-radius: 0 0 1rem 1rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #003f88;
+        /* azul marino */
+    }
+
+    .card-text {
+        color: #495057;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-outline-primary,
+    .btn-outline-danger {
+        transition: all 0.2s ease-in-out;
+        font-weight: 500;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: #fff;
+        border-color: #dc3545;
+    }
+
+    .btn[disabled] {
+        cursor: not-allowed;
+        opacity: 0.5 !important;
+    }
+
+    .border-success {
+        border: 2px solid #198754 !important;
+    }
+
+    .opacity-75 {
+        opacity: 0.75 !important;
+    }
+
+
     /* Quitar flechas de los inputs type="number" en Chrome, Safari, Edge, Opera */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
@@ -500,7 +568,7 @@
                             if (error.response && error.response.data) {
                                 mostrarError(`❌ Error: ${error.response.data}`);
                             } else {
-                                mostrarError("❌ Ocurrió un error al intentar eliminar el producto.");
+                                mostrarError("❌ Ocurrió un error al intentar eliminar el producto, Usuario no autorizado");
                             }
                         });
                 }
